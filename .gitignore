@@ -1,0 +1,25 @@
+# dependências
+node_modules/
+
+# build do Next
+.next/
+out/
+build/
+next-env.d.ts
+
+# ambiente
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+npm-debug.log*
+
+# sistema
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
