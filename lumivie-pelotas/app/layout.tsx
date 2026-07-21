@@ -7,6 +7,9 @@ import { unidade } from "./unidade";
 const META_PIXEL_ID = unidade.metaPixelId;
 
 export const metadata: Metadata = {
+  // Sem isto o navegador pede /favicon.ico, que nao existe, e leva 404.
+  // O arquivo vive na raiz do dominio, junto com o site da Lumivie.
+  icons: { icon: "/favicon.svg" },
   title: "Lumivie",
   description: "O extraordinário começa em você.",
 };
