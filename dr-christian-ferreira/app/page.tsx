@@ -1,24 +1,24 @@
-import WarpBackground from "./WarpBackground";
+import WarpTuner from "./WarpTuner";
 
 const CDN = "https://framerusercontent.com/images";
 
 // Cards (imagem = link). A ordem e os links replicam o site original.
 const cards = [
   {
-    img: `${CDN}/kfpuAQBpEcwpGoQH7AgrMsRE.png`,
+    img: "/cards/card1.jpg",
     href:
-      "https://wa.me/5511952136738?text=Ol%C3%A1%21%20Vim%20da%20bio%20do%20Instagram%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20a%20consulta%20em%20S%C3%A3o%20Paulo",
-    label: "Agendar consulta",
+      "https://tintim.link/whatsapp/5880db1a-90a2-495e-9a51-27dc9c28bc7e/6808c946-5020-45e7-9152-4f77660857f9",
+    label: "Agende sua consulta",
   },
   {
-    img: `${CDN}/HbzzQSy95mXVVY4Zv1xbnMxyNo.png`,
+    img: "/cards/card2.jpg",
     href: "https://drchristianferreira.com.br/",
     label: "Conheça o Dr. Christian Ferreira",
   },
   {
-    img: `${CDN}/HBpZbSO2CcAIyxip0zDHuYlJMI.png`,
-    href: "https://www.tiktok.com/@drchristianferreira",
-    label: "TikTok do Dr. Christian Ferreira",
+    img: "/cards/card3.jpg",
+    href: "https://www.youtube.com/@drchristianferreira",
+    label: "YouTube do Dr. Christian Ferreira",
   },
 ];
 
@@ -44,13 +44,9 @@ function VerifiedBadge() {
 export default function Home() {
   return (
     <>
-      {/* Fundo animado (shader Warp) — paleta BRONZE FOSCO + TRAVERTINO */}
-      <WarpBackground
-        color1="#E4D5BE"
-        color2="#8B6F49"
-        color3="#46351F"
-        speed={0.3}
-      />
+      {/* Fundo animado (shader Warp) — paleta final escolhida pelo usuário no ajuste ao vivo.
+          WarpTuner acrescenta o painel de ajuste ao vivo (abra com ?tune ou Shift+C). */}
+      <WarpTuner c1="#9a8160" c2="#ddcebb" c3="#927655" speed={0.3} />
 
       <main className="page">
         <div className="column">
