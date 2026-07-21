@@ -23,9 +23,9 @@ Cópia do app de São Paulo para a segunda unidade. **A única coisa que difere*
 | Link do card do WhatsApp | link rastreado tintim.link de SP | link rastreado tintim.link de Pelotas |
 | Meta Pixel (`layout.tsx`) | pixel de SP | pixel de Pelotas |
 
-Como são dois apps independentes, **qualquer mudança visual precisa ser aplicada nos dois**.
+Como são dois apps independentes, **qualquer mudança visual precisa ser aplicada nos dois** — inclusive as artes dos cards, que estão duplicadas em `public/cards/` de cada um.
 
-> ⚠️ **Pendência:** a arte do card do WhatsApp de Pelotas ainda é a de São Paulo — o texto "Agende sua consulta em São Paulo" está **dentro do PNG**, não é texto HTML. Está marcada com `PLACEHOLDER` no `page.tsx` até a arte definitiva chegar.
+As artes atuais ("Agende sua consulta" e "Acesse o site") **não citam cidade**, de propósito: é o que permite as duas unidades usarem exatamente a mesma imagem.
 
 ## Por que subpastas
 
@@ -44,7 +44,12 @@ O **selo de verificado** é um SVG inline (componente `VerifiedBadge` em `app/pa
 
 ## Imagens
 
-No **Dr. Christian** os três cards já são locais, em `public/cards/card{1,2,3}.jpg`. A **foto de perfil** dele e as imagens do Lumivie continuam **hotlinkadas da CDN pública do Framer** (`framerusercontent.com`); para deixar offline, baixe para `public/` e ajuste os caminhos.
+Os cards dos três apps são **locais**, em `public/cards/`:
+
+- Dr. Christian: `card1.jpg`, `card2.jpg`, `card3.jpg`
+- Lumivie (SP e Pelotas): `card-whatsapp.jpg`, `card-site.jpg`
+
+A **foto de perfil do Dr. Christian** ainda é **hotlinkada da CDN pública do Framer** (`framerusercontent.com`) — é a última imagem remota que sobrou. Para deixar offline, baixe para `public/` e ajuste o caminho.
 
 ## Rastreamento
 
