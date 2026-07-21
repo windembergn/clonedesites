@@ -19,7 +19,7 @@ docker run -d --name dr-christian --restart unless-stopped \
   dr-christian:latest
 ```
 
-Para o segundo app, troque o nome/imagem e mapeie outra porta no host (ex.: `-p 3001:3000`).
+Para os outros apps, troque o nome/imagem e mapeie outra porta no host (ex.: `-p 3001:3000`, `-p 3002:3000`). São três containers independentes — um por app.
 
 O container sempre escuta na **porta 3000** internamente (`PORT=3000`, `HOSTNAME=0.0.0.0`); quem muda é o mapeamento no host.
 

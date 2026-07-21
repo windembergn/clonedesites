@@ -1,18 +1,31 @@
 # O projeto
 
-Dois "link-in-bio" clonados de templates Framer e reconstruídos em Next.js (App Router + TypeScript), cada um em sua própria subpasta.
+Link-in-bio clonados de templates Framer e reconstruídos em Next.js (App Router + TypeScript), cada um em sua própria subpasta. Hoje são **três apps**: um do Dr. Christian e dois da Lumivie (uma por unidade).
 
 ## `dr-christian-ferreira/`
 
 Clone de `drchristianferreira.framer.ai` (cirurgião plástico). Nome exibido: **"Christian Ferreira"**.
 
-## `smart-plastica/`
+## `smart-plastica/` — Lumivie **São Paulo**
 
 Clone de `smartlover.framer.ai`, **rebrandeado para "Lumivie Clinique"**. A pasta manteve o nome antigo por inércia.
 
 - Logo local em `public/logo-lumivi.jpeg`
 - Frase: "O extraordinário começa em você"
 - O card de baixo aponta para <http://lumivi.com.br/>
+
+## `lumivie-pelotas/` — Lumivie **Pelotas**
+
+Cópia do app de São Paulo para a segunda unidade. **A única coisa que difere** entre as duas é:
+
+| | São Paulo (`smart-plastica/`) | Pelotas (`lumivie-pelotas/`) |
+|---|---|---|
+| Link do card do WhatsApp | link rastreado tintim.link de SP | link rastreado tintim.link de Pelotas |
+| Meta Pixel (`layout.tsx`) | pixel de SP | pixel de Pelotas |
+
+Como são dois apps independentes, **qualquer mudança visual precisa ser aplicada nos dois**.
+
+> ⚠️ **Pendência:** a arte do card do WhatsApp de Pelotas ainda é a de São Paulo — o texto "Agende sua consulta em São Paulo" está **dentro do PNG**, não é texto HTML. Está marcada com `PLACEHOLDER` no `page.tsx` até a arte definitiva chegar.
 
 ## Por que subpastas
 
@@ -35,6 +48,8 @@ No **Dr. Christian** os três cards já são locais, em `public/cards/card{1,2,3
 
 ## Rastreamento
 
-O `layout.tsx` do Dr. Christian carrega o **Meta Pixel** (`next/script`, `strategy="afterInteractive"`, com o `<img>` de fallback em `<noscript>`). O ID do pixel fica numa constante no topo do arquivo. O card "Agende sua consulta" aponta para um link rastreado do tintim.link, não direto para o WhatsApp.
+Os **três** apps carregam um **Meta Pixel** no `layout.tsx` (`next/script`, `strategy="afterInteractive"`, com o `<img>` de fallback em `<noscript>`). O ID fica numa constante `META_PIXEL_ID` no topo do arquivo — **cada app tem o seu**, não reaproveite.
+
+Nos três, o card do WhatsApp aponta para um link rastreado do **tintim.link**, não direto para o `wa.me`.
 
 Veja também [`shader-warp.md`](./shader-warp.md) para o fundo animado.
