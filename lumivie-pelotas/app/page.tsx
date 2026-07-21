@@ -1,17 +1,17 @@
 import WarpBackground from "./WarpBackground";
+import { asset, SITE_URL, unidade } from "./unidade";
 
 // Cards (imagem = link). Artes locais em public/cards/ — as mesmas nas duas
 // unidades (a arte não cita cidade); só o link do WhatsApp muda.
 const cards = [
   {
-    img: "/cards/card-whatsapp.jpg",
-    href:
-      "https://tintim.link/whatsapp/e0860eef-331a-481e-8575-13e5561495d5/be4636d3-9229-4aa2-b5ef-aad78844bfb0",
+    img: asset("/cards/card-whatsapp.jpg"),
+    href: unidade.whatsapp,
     label: "Agende sua consulta",
   },
   {
-    img: "/cards/card-site.jpg",
-    href: "http://lumivi.com.br/",
+    img: asset("/cards/card-site.jpg"),
+    href: SITE_URL,
     label: "Acesse o site da Lumivie",
   },
 ];
@@ -51,7 +51,7 @@ export default function Home() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className="avatar"
-            src="/logo-lumivi.jpeg"
+            src={asset("/logo-lumivi.jpeg")}
             alt="Lumivie"
           />
 

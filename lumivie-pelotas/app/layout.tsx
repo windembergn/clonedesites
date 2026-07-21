@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
+import { unidade } from "./unidade";
 
-// Pixel da unidade de Pelotas. A unidade de São Paulo tem o seu próprio,
-// em smart-plastica/ — não misture os dois.
-const META_PIXEL_ID = "1560704075587529";
+// Pixel por unidade — escolhido no build por NEXT_PUBLIC_UNIDADE (ver unidade.ts).
+const META_PIXEL_ID = unidade.metaPixelId;
 
 export const metadata: Metadata = {
   title: "Lumivie",

@@ -23,3 +23,6 @@ Thumbs.db
 # editor
 .vscode/
 .idea/
+
+# builds estáticos por unidade (BASE_PATH)
+out-*/
