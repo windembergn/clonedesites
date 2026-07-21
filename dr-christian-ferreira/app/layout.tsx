@@ -5,6 +5,8 @@ import "./globals.css";
 const META_PIXEL_ID = "1728746434993942";
 
 export const metadata: Metadata = {
+  // Sem isto o navegador pede /favicon.ico, leva 404 e mostra o ícone genérico.
+  icons: { icon: "/avatar.jpg" },
   title: "Christian Ferreira",
   description:
     "Viva o poder da transformação, através da cirurgia plástica.",

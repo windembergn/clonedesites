@@ -1,7 +1,5 @@
 import WarpTuner from "./WarpTuner";
 
-const CDN = "https://framerusercontent.com/images";
-
 // Cards (imagem = link). A ordem e os links replicam o site original.
 const cards = [
   {
@@ -53,7 +51,7 @@ export default function Home() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className="avatar"
-            src={`${CDN}/yuFi9KyyL6vnrzX8iInCfFswVQ.jpg`}
+            src="/avatar.jpg"
             alt="Dr. Christian Ferreira"
           />
 
