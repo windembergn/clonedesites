@@ -5,10 +5,13 @@ const CDN = "https://framerusercontent.com/images";
 // Cards (imagem = link). A ordem e os links replicam o site original.
 const cards = [
   {
+    // ⚠️ PLACEHOLDER: esta arte é a da unidade de São Paulo e tem
+    // "Agende sua consulta em São Paulo" escrito DENTRO da imagem.
+    // Trocar pela arte de Pelotas assim que ela chegar.
     img: `${CDN}/fkIraCECyXhUEzC1PHh7OkFitY.png`,
     href:
-      "https://tintim.link/whatsapp/5880db1a-90a2-495e-9a51-27dc9c28bc7e/07283f4c-4119-4f10-81d9-ea7643071578",
-    label: "Agende sua consulta em São Paulo",
+      "https://tintim.link/whatsapp/e0860eef-331a-481e-8575-13e5561495d5/be4636d3-9229-4aa2-b5ef-aad78844bfb0",
+    label: "Agende sua consulta em Pelotas",
   },
   {
     img: `${CDN}/g5Qlg0udJ2clERTePkvhibqAWE.png`,
