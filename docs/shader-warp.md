@@ -30,9 +30,15 @@ O componente vive em `app/WarpBackground.tsx` de cada app, e as cores são passa
 | App | color1 | color2 | color3 |
 |-----|--------|--------|--------|
 | **Lumivie** (idêntico ao original) | `#E0DACF` | `#914B2F` | `#5B2C1E` |
-| **Dr. Christian** (Bronze Fosco + Travertino) | `#E4D5BE` | `#8B6F49` | `#46351F` |
+| **Dr. Christian** (dourado) | `#9a8160` | `#ddcebb` | `#927655` |
 
-O fundo do Dr. Christian já foi azul escuro numa versão anterior; hoje está na paleta bronze.
+O fundo do Dr. Christian já passou por azul escuro, bronze fosco + travertino e azul petróleo antigo; a paleta atual é a dourada acima, escolhida no ajuste ao vivo (veja abaixo).
+
+## Painel de ajuste ao vivo (`WarpTuner`)
+
+No app do Dr. Christian o `page.tsx` não usa `WarpBackground` direto: usa `app/WarpTuner.tsx`, que o envolve e acrescenta um painel para mexer nas 3 cores em tempo real.
+
+O painel **fica escondido por padrão** — só aparece com `?tune` na URL ou apertando `Shift+C`. O botão "Copiar hex" põe os 3 valores na área de transferência para colar de volta no `page.tsx`.
 
 ## Dica ao comparar com o original
 

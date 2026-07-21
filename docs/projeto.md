@@ -31,6 +31,10 @@ O **selo de verificado** é um SVG inline (componente `VerifiedBadge` em `app/pa
 
 ## Imagens
 
-Foto de perfil e cards são **hotlinkados da CDN pública do Framer** (`framerusercontent.com`), não baixados. Se quiser deixar offline, baixe para `public/` e ajuste os caminhos.
+No **Dr. Christian** os três cards já são locais, em `public/cards/card{1,2,3}.jpg`. A **foto de perfil** dele e as imagens do Lumivie continuam **hotlinkadas da CDN pública do Framer** (`framerusercontent.com`); para deixar offline, baixe para `public/` e ajuste os caminhos.
+
+## Rastreamento
+
+O `layout.tsx` do Dr. Christian carrega o **Meta Pixel** (`next/script`, `strategy="afterInteractive"`, com o `<img>` de fallback em `<noscript>`). O ID do pixel fica numa constante no topo do arquivo. O card "Agende sua consulta" aponta para um link rastreado do tintim.link, não direto para o WhatsApp.
 
 Veja também [`shader-warp.md`](./shader-warp.md) para o fundo animado.
