@@ -15,6 +15,8 @@ export type UnidadeKey = "sp" | "pelotas";
 type Unidade = {
   key: UnidadeKey;
   nome: string;
+  /** identificador desta pagina no dashboard */
+  trackSite: string;
   whatsapp: string;
   metaPixelId: string;
 };
@@ -23,6 +25,7 @@ const UNIDADES: Record<UnidadeKey, Unidade> = {
   sp: {
     key: "sp",
     nome: "São Paulo - SP",
+    trackSite: "link-sp",
     whatsapp:
       "https://tintim.link/whatsapp/5880db1a-90a2-495e-9a51-27dc9c28bc7e/07283f4c-4119-4f10-81d9-ea7643071578",
     metaPixelId: "26939711942372756",
@@ -30,6 +33,7 @@ const UNIDADES: Record<UnidadeKey, Unidade> = {
   pelotas: {
     key: "pelotas",
     nome: "Pelotas - RS",
+    trackSite: "link-rs",
     whatsapp:
       "https://tintim.link/whatsapp/e0860eef-331a-481e-8575-13e5561495d5/be4636d3-9229-4aa2-b5ef-aad78844bfb0",
     metaPixelId: "1560704075587529",

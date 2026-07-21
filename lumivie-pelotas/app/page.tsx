@@ -1,4 +1,5 @@
 import WarpBackground from "./WarpBackground";
+import Tracker from "./Tracker";
 import { asset, SITE_URL, unidade } from "./unidade";
 
 // Cards (imagem = link). Artes locais em public/cards/ — as mesmas nas duas
@@ -39,6 +40,8 @@ export default function Home() {
   return (
     <>
       {/* Fundo animado (shader Warp) — paleta COBRE/DOURADO idêntica ao original */}
+      <Tracker site={unidade.trackSite} />
+
       <WarpBackground
         color1="#E0DACF"
         color2="#914B2F"

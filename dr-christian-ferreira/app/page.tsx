@@ -1,4 +1,5 @@
 import WarpTuner from "./WarpTuner";
+import Tracker from "./Tracker";
 
 // Cards (imagem = link). A ordem e os links replicam o site original.
 const cards = [
@@ -44,6 +45,8 @@ export default function Home() {
     <>
       {/* Fundo animado (shader Warp) — paleta final escolhida pelo usuário no ajuste ao vivo.
           WarpTuner acrescenta o painel de ajuste ao vivo (abra com ?tune ou Shift+C). */}
+      <Tracker site="link-christian" />
+
       <WarpTuner c1="#9a8160" c2="#ddcebb" c3="#927655" speed={0.3} />
 
       <main className="page">
