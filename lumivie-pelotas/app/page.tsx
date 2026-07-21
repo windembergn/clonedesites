@@ -1,22 +1,18 @@
 import WarpBackground from "./WarpBackground";
 
-const CDN = "https://framerusercontent.com/images";
-
-// Cards (imagem = link). A ordem e os links replicam o site original.
+// Cards (imagem = link). Artes locais em public/cards/ — as mesmas nas duas
+// unidades (a arte não cita cidade); só o link do WhatsApp muda.
 const cards = [
   {
-    // ⚠️ PLACEHOLDER: esta arte é a da unidade de São Paulo e tem
-    // "Agende sua consulta em São Paulo" escrito DENTRO da imagem.
-    // Trocar pela arte de Pelotas assim que ela chegar.
-    img: `${CDN}/fkIraCECyXhUEzC1PHh7OkFitY.png`,
+    img: "/cards/card-whatsapp.jpg",
     href:
       "https://tintim.link/whatsapp/e0860eef-331a-481e-8575-13e5561495d5/be4636d3-9229-4aa2-b5ef-aad78844bfb0",
-    label: "Agende sua consulta em Pelotas",
+    label: "Agende sua consulta",
   },
   {
-    img: `${CDN}/g5Qlg0udJ2clERTePkvhibqAWE.png`,
+    img: "/cards/card-site.jpg",
     href: "http://lumivi.com.br/",
-    label: "Acesse o site da Lumivi",
+    label: "Acesse o site da Lumivie",
   },
 ];
 

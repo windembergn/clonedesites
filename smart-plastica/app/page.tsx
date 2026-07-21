@@ -1,19 +1,18 @@
 import WarpBackground from "./WarpBackground";
 
-const CDN = "https://framerusercontent.com/images";
-
-// Cards (imagem = link). A ordem e os links replicam o site original.
+// Cards (imagem = link). Artes locais em public/cards/ — as mesmas nas duas
+// unidades; só o link do WhatsApp muda (ver lumivie-pelotas/).
 const cards = [
   {
-    img: `${CDN}/fkIraCECyXhUEzC1PHh7OkFitY.png`,
+    img: "/cards/card-whatsapp.jpg",
     href:
       "https://tintim.link/whatsapp/5880db1a-90a2-495e-9a51-27dc9c28bc7e/07283f4c-4119-4f10-81d9-ea7643071578",
-    label: "Agende sua consulta em São Paulo",
+    label: "Agende sua consulta",
   },
   {
-    img: `${CDN}/g5Qlg0udJ2clERTePkvhibqAWE.png`,
+    img: "/cards/card-site.jpg",
     href: "http://lumivi.com.br/",
-    label: "Acesse o site da Lumivi",
+    label: "Acesse o site da Lumivie",
   },
 ];
 
