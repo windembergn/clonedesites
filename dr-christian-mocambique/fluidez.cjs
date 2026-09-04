@@ -6,7 +6,7 @@ const { chromium } = require('playwright')
 ;(async () => {
   const b = await chromium.launch()
   const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage()
-  await p.goto('http://127.0.0.1:3211/', { waitUntil: 'networkidle' })
+  await p.goto((process.env.URL_PAGINA || 'http://127.0.0.1:3211/'), { waitUntil: 'networkidle' })
   await p.waitForTimeout(2500)
 
   const inicio = await p.evaluate(
