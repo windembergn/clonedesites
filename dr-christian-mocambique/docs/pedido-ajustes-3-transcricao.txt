@@ -1,0 +1,10 @@
+[   0.0] Olha, duas coisas tá, os vídeos não ficaram alinhados aqui, estão todos juntos aqui,
+[   8.0] em vez de ficar um aqui, outro aqui e outro aqui, tem que ajustar isso, pra cada um ficar
+[  14.0] no seu lugar certinho, no seu espaço, aqui nessa parte.
+[  19.0] E aqui, eu preciso que você teste um playwright até deixar certinho, deixar fluido essa
+[  24.0] rolagem, porque aqui, quando chega na metade aqui, ele salta pra dentro.
+[  29.0] E aí, quando chega no final, ele salta pra metade também, vou mostrar.
+[  33.0] Chegou aqui, faltou pra metade também, e aí ele volta a descer.
+[  36.0] Então, só esses dois detalhes agora, que você tem que ajustar.
+[  39.0] Então, testa com o playwright aí, deixa tudo 100%, e aí você me retorna, tá?
+[  45.0] Porque já tá tudo feito.

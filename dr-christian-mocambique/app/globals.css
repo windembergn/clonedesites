@@ -1,0 +1,401 @@
+/* ---------------------------------------------------------------------------
+   Dr. Christian Ferreira — LP internacional (Moçambique)
+
+   Paleta e tipografia saem do Brand Guidelines (págs. 06 e 08). A estrutura
+   segue o mesmo vocabulário do site da Lumivie: seções de altura de tela,
+   imagem sangrando até a borda, tipografia grande e pouca coisa centralizada.
+--------------------------------------------------------------------------- */
+
+/* As fontes vivem em `app/fontes/` e não em `public/`, de propósito.
+
+   Com `url("/fonts/...")` a apontar para `public/`, o caminho fica absoluto e o
+   basePath NÃO é aplicado: o Next não reescreve `url()` dentro de CSS, e as
+   quatro davam 404 quando a página passou a ser servida em /mocambique. Assim
+   quem resolve é o webpack, que emite cada ficheiro com hash e monta o URL já
+   com o basePath certo, seja qual for. */
+@font-face {
+  font-family: "Nostalgic Moment";
+  src: url("./fontes/NostalgicMoment-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nostalgic Moment";
+  src: url("./fontes/NostalgicMoment-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CS Glodive";
+  src: url("./fontes/CSGlodive-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Edwardian Script";
+  src: url("./fontes/EdwardianScript.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --petroleo: #213c3b;
+  --marfim: #f2eee6;
+  --travertino: #d8cdbb;
+  --argila: #9b6651;
+  --bronze: #8a7658;
+  --onix: #202223;
+
+  --marfim-quente: #ebe5d9;
+  --linha: rgba(32, 34, 35, 0.14);
+  --linha-clara: rgba(242, 238, 230, 0.18);
+
+  /* Bronze puro sobre marfim dá 3,4:1, pouco para texto miúdo e espaçado.
+     Esta é a mesma cor escurecida até 5,5:1. */
+  --bronze-texto: #6b5a41;
+
+  --titulo: "Nostalgic Moment", "Times New Roman", serif;
+  --texto: "CS Glodive", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --script: "Edwardian Script", "Nostalgic Moment", cursive;
+
+  /* Respiro lateral generoso, mas a página usa a largura toda: nada de coluna
+     estreita no meio da tela. */
+  --px: clamp(1.25rem, 4.5vw, 4.5rem);
+  --secao: clamp(5.5rem, 11vh, 9rem);
+  --largo: 1680px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  background: var(--marfim);
+  color: var(--onix);
+  font-family: var(--texto);
+  font-size: clamp(1rem, 0.95rem + 0.22vw, 1.09rem);
+  line-height: 1.68;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+video,
+svg {
+  max-width: 100%;
+  display: block;
+  -webkit-user-drag: none;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--titulo);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.018em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+::selection {
+  background: rgba(155, 102, 81, 0.26);
+}
+
+/* --- grão de filme, o mesmo recurso do site da Lumivie ------------------- */
+
+.grao {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.13;
+  mix-blend-mode: overlay;
+  z-index: 3;
+}
+
+/* --- estruturas ---------------------------------------------------------- */
+
+.tela {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+}
+
+.faixa {
+  width: 100%;
+  max-width: var(--largo);
+  margin-inline: auto;
+  padding-inline: var(--px);
+}
+
+.escuro {
+  background: var(--onix);
+  color: var(--marfim);
+}
+.petroleo {
+  background: var(--petroleo);
+  color: var(--marfim);
+}
+.travertino {
+  background: var(--travertino);
+}
+.marfim {
+  background: var(--marfim);
+}
+
+/* --- tipografia ---------------------------------------------------------- */
+
+.olho {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--bronze-texto);
+}
+.escuro .olho,
+.petroleo .olho,
+.sobre-foto .olho {
+  color: var(--travertino);
+}
+
+.d1 {
+  font-size: clamp(2.6rem, 6.4vw, 6.2rem);
+}
+.d2 {
+  font-size: clamp(2.1rem, 5vw, 4.4rem);
+}
+.d3 {
+  font-size: clamp(1.35rem, 2.1vw, 2rem);
+}
+
+.italico {
+  font-style: italic;
+  color: var(--argila);
+}
+.escuro .italico,
+.petroleo .italico,
+.sobre-foto .italico {
+  color: var(--travertino);
+}
+
+.lead {
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.32rem);
+  line-height: 1.55;
+}
+
+.assinada {
+  font-family: var(--script);
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+}
+
+.medida {
+  max-width: 54ch;
+}
+.medida-curta {
+  max-width: 40ch;
+}
+
+/* --- botões -------------------------------------------------------------- */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 1.1rem 2.3rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-family: var(--texto);
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  white-space: nowrap;
+  transition: color 0.5s var(--ease), border-color 0.5s var(--ease);
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--argila);
+  transform: translateY(101%);
+  transition: transform 0.6s var(--ease);
+}
+.btn:hover::after,
+.btn:focus-visible::after {
+  transform: translateY(0);
+}
+.btn:hover,
+.btn:focus-visible {
+  color: var(--marfim);
+  border-color: var(--argila);
+}
+.btn-cheio {
+  background: var(--onix);
+  color: var(--marfim);
+  border-color: var(--onix);
+}
+.btn-claro {
+  background: var(--marfim);
+  color: var(--onix);
+  border-color: var(--marfim);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 4px;
+}
+
+/* Brilho que atravessa o botão principal de tempos a tempos. */
+.brilho {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.brilho::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(242, 238, 230, 0.4),
+    transparent
+  );
+  transform: translateX(-160%) skewX(-18deg);
+  animation: brilho 5.5s ease-in-out infinite;
+}
+@keyframes brilho {
+  0%,
+  9% {
+    transform: translateX(-160%) skewX(-18deg);
+  }
+  27%,
+  100% {
+    transform: translateX(340%) skewX(-18deg);
+  }
+}
+
+/* --- cursor -------------------------------------------------------------- */
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  border: 1px solid var(--travertino);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  font-size: 0.54rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: transparent;
+  mix-blend-mode: difference;
+  transition: width 0.4s var(--ease), height 0.4s var(--ease),
+    margin 0.4s var(--ease), opacity 0.3s linear, color 0.3s linear,
+    background-color 0.4s var(--ease);
+}
+.cursor[data-vivo="1"] {
+  opacity: 1;
+}
+.cursor[data-alvo="link"] {
+  width: 68px;
+  height: 68px;
+  margin: -34px 0 0 -34px;
+  background: rgba(242, 238, 230, 0.14);
+}
+.cursor[data-alvo="rotulo"] {
+  width: 84px;
+  height: 84px;
+  margin: -42px 0 0 -42px;
+  color: var(--marfim);
+  background: rgba(242, 238, 230, 0.1);
+}
+@media (hover: none), (pointer: coarse), (max-width: 1023px) {
+  .cursor {
+    display: none;
+  }
+}
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  html.cursor-proprio,
+  html.cursor-proprio * {
+    cursor: none !important;
+  }
+}
+
+/* --- movimento reduzido -------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  [data-split] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* --- barra de progresso -------------------------------------------------- */
+
+.progresso {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  z-index: 250;
+  pointer-events: none;
+}
+.progresso i {
+  display: block;
+  height: 100%;
+  background: var(--argila);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}

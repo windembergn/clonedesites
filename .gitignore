@@ -26,3 +26,13 @@ Thumbs.db
 
 # builds estáticos por unidade (BASE_PATH)
 out-*/
+
+# material de marca e banco de imagem do cliente (~750 MB soltos na raiz)
+# Fica de fora de propósito: o repositório é PÚBLICO e isto é material do
+# cliente, não código. O que a página usa está em <app>/public/.
+Banco de imagem Google/
+blanc-sp/
+brand-assets/
+Brand Assets-*.zip
+*.pdf
+Prancheta *.jpg

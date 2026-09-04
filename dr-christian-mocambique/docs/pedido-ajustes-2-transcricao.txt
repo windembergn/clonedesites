@@ -1,0 +1,18 @@
+[   0.1] Olha, tem um detalhe que você tem que ajustar, tá? O vídeo ficou aqui cortado, e aí se eu duplei nesse, olha o que acontece
+[   8.1] Aí ele fica com o tamanho certo aqui, e esses outros ficam afastados da legenda aqui embaixo
+[  13.1] Eu acho que não ficou tão legal assim
+[  15.1] Então, teria que pensar ou deixar todos já esticados assim, escritinho embaixo e tal, e essa parte já maiorzinha
+[  24.1] E quando eu tento, enfim, porque se não fica estranho, ele expandia assim do nada
+[  31.1] Tem que ajustar isso, e quando eu tô rolando aqui, às vezes ele dá uma travada
+[  34.0] Deixa eu ver o porquê, tá dando uma bugadinha ali
+[  39.8] E aqui pior ainda, essa parte que eu tô aqui na parte do Dr. Christian, do nada saltou pra cá forte
+[  46.8] Tá aqui, aí eu rolo um pouquinho mais, simplesmente teletransportou pra outra parte
+[  52.8] Não pode ter isso de teletransportar em momento nenhum, ele tem que ir descendo suave do início ao fim, entendeu?
+[  57.8] Não é pra ter salto de pixel nenhum, olha aqui de novo, saltou lá pra cima e aí voltou pra baixo
+[  63.8] Tem que arrumar isso aí
+[  65.8] E aqui, isso aqui agora ficou muito maior, a primeira vez que você fez ficou certinho, né?
+[  69.8] Ele vinha até aqui no 6, ele vinha do 1 até o 6, ele não pode descer até aqui embaixo, entendeu?
+[  74.8] O tamanho desse aqui tem que ser exato até aqui, entendeu?
+[  77.8] Tem que ajustar isso aqui, não aqui, esse pedação da seção ficou vazia, aí não faz sentido
+[  83.8] Tá, essa parte aqui ficou legal, ficou ok, o barulhinho tá saindo, tudo certinho
+[  88.8] Só ajusta esses detalhes aí que eu te trouxe aqui, por favor

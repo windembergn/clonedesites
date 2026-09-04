@@ -1,0 +1,1482 @@
+/* ---------------------------------------------------------------------------
+   Estilos das seções. Separado de globals.css só por tamanho.
+   Regra geral desta página: a imagem sangra até a borda da janela e o texto
+   ocupa uma coluna larga ao lado dela. Nada de bloco estreito centralizado.
+--------------------------------------------------------------------------- */
+
+/* --- selos ---------------------------------------------------------------- */
+
+.selo-olho {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex: 0 0 auto;
+  color: var(--argila);
+}
+.escuro .selo-olho,
+.petroleo .selo-olho,
+.sobre-foto .selo-olho {
+  color: var(--bronze);
+}
+
+/* --- navbar --------------------------------------------------------------- */
+
+.navbar {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem var(--px);
+  color: var(--marfim);
+  transition: background-color 0.55s var(--ease), color 0.55s var(--ease),
+    transform 0.55s var(--ease), box-shadow 0.55s var(--ease);
+}
+.navbar[data-solido="1"] {
+  /* Cor cheia em vez de `backdrop-filter`. O desfoque recompõe a faixa toda a
+     cada quadro por cima de conteúdo em movimento, e é das causas mais comuns
+     de scroll aos solavancos no Windows. */
+  background: rgb(243, 240, 233);
+  color: var(--onix);
+  box-shadow: 0 1px 0 var(--linha);
+}
+.navbar .marca {
+  height: clamp(24px, 3vw, 32px);
+  width: auto;
+  filter: invert(1) brightness(2);
+  transition: filter 0.55s var(--ease);
+}
+.navbar[data-solido="1"] .marca {
+  filter: none;
+}
+.navbar nav {
+  display: none;
+  gap: clamp(1rem, 2vw, 2.1rem);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.navbar nav a {
+  text-decoration: none;
+  opacity: 0.82;
+  position: relative;
+  padding-block: 0.3rem;
+}
+.navbar nav a::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform 0.45s var(--ease);
+}
+.navbar nav a:hover::after {
+  transform: scaleX(1);
+  transform-origin: 0 50%;
+}
+.navbar .btn {
+  padding: 0.78rem 1.5rem;
+  font-size: 0.64rem;
+}
+@media (min-width: 1024px) {
+  .navbar nav {
+    display: flex;
+  }
+}
+
+/* --- hero ----------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  background: var(--onix);
+  color: var(--marfim);
+  display: grid;
+  overflow: hidden;
+}
+.hero-foto {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+/* As fotos que sangram numa coluna saem do fluxo, sempre.
+
+   Em fluxo, `height: 100%` dentro de um pai de altura automática não resolve, e
+   a imagem cai na altura natural. Como estas são `loading="lazy"`, isso só
+   acontecia quando ela chegava: a seção crescia mais de 100 px no meio da
+   rolagem, o ScrollTrigger recalculava todos os pins e a página saltava. Fora do
+   fluxo, a imagem não tem como mexer na altura de nada. */
+.hero-foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 68% 18%;
+}
+.hero-veu {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(32, 34, 35, 0.72) 0%,
+    rgba(32, 34, 35, 0.55) 40%,
+    rgba(32, 34, 35, 0.92) 100%
+  );
+}
+.hero-conteudo {
+  position: relative;
+  z-index: 4;
+  align-self: end;
+  width: 100%;
+  padding-block: 8rem clamp(2rem, 5vh, 3.5rem);
+}
+.hero h1 {
+  margin-block: 1.5rem 1.4rem;
+  max-width: 15ch;
+}
+.hero-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+.hero-selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem clamp(1.2rem, 3vw, 2.8rem);
+  margin-top: clamp(2rem, 5vh, 3.4rem);
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--linha-clara);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+.hero-rolar {
+  position: absolute;
+  right: var(--px);
+  bottom: clamp(2rem, 5vh, 3.5rem);
+  z-index: 5;
+  display: none;
+  writing-mode: vertical-rl;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+.hero-rolar::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 3.4rem;
+  margin: 0.8rem auto 0;
+  background: currentColor;
+  animation: rolar 2.4s var(--ease) infinite;
+}
+@keyframes rolar {
+  0% {
+    transform: scaleY(0);
+    transform-origin: 50% 0;
+  }
+  48% {
+    transform: scaleY(1);
+    transform-origin: 50% 0;
+  }
+  52% {
+    transform: scaleY(1);
+    transform-origin: 50% 100%;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: 50% 100%;
+  }
+}
+
+/* A partir do tablet o hero deixa de ser foto de fundo e passa a ser um par:
+   painel de texto à esquerda, retrato ocupando toda a altura à direita. */
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr clamp(360px, 38vw, 640px);
+    align-items: stretch;
+  }
+  .hero-foto {
+    position: relative;
+    grid-column: 2;
+    inset: auto;
+  }
+  .hero-foto img {
+    object-position: 50% 12%;
+  }
+  .hero-veu {
+    background: linear-gradient(
+      90deg,
+      var(--onix) 0%,
+      rgba(32, 34, 35, 0.55) 46%,
+      rgba(32, 34, 35, 0.05) 100%
+    );
+    grid-column: 2;
+    inset: 0;
+    left: -12vw;
+    width: auto;
+  }
+  .hero-conteudo {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    padding-block: 7rem 4rem;
+    padding-inline: var(--px) clamp(1rem, 3vw, 3rem);
+    max-width: var(--largo);
+    margin-left: auto;
+  }
+  .hero-rolar {
+    display: block;
+  }
+}
+
+/* --- faixa correndo ------------------------------------------------------- */
+
+.faixa-correndo {
+  overflow: hidden;
+  border-block: 1px solid var(--linha-clara);
+  background: var(--petroleo);
+  color: var(--travertino);
+  padding-block: clamp(0.9rem, 2vw, 1.4rem);
+}
+.faixa-trilho {
+  display: flex;
+  width: max-content;
+  flex-wrap: nowrap;
+}
+.faixa-seq {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+.faixa-item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  padding-inline: clamp(1.5rem, 3vw, 3rem);
+  font-family: var(--titulo);
+  font-size: clamp(1.3rem, 2.6vw, 2.3rem);
+  font-style: italic;
+  white-space: nowrap;
+  opacity: 0.9;
+}
+.faixa-selo {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: 0 0 auto;
+  color: var(--bronze);
+}
+
+/* --- prova / números ------------------------------------------------------ */
+
+.prova {
+  padding-block: var(--secao);
+}
+.prova-topo {
+  display: grid;
+  gap: clamp(1.6rem, 4vw, 3rem);
+  align-items: end;
+  margin-bottom: clamp(3rem, 7vw, 5rem);
+}
+@media (min-width: 980px) {
+  .prova-topo {
+    grid-template-columns: 1.25fr 1fr;
+  }
+}
+.numeros {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: 1px solid var(--linha-clara);
+}
+@media (min-width: 900px) {
+  .numeros {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.numero {
+  padding: clamp(1.6rem, 3.4vw, 2.8rem) clamp(1.2rem, 2.4vw, 2rem);
+  border-bottom: 1px solid var(--linha-clara);
+  border-right: 1px solid var(--linha-clara);
+}
+.numero:nth-child(2n) {
+  border-right: 0;
+}
+@media (min-width: 900px) {
+  .numero:nth-child(2n) {
+    border-right: 1px solid var(--linha-clara);
+  }
+  .numero:last-child {
+    border-right: 0;
+  }
+}
+.numero b {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--titulo);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+.numero > span {
+  display: block;
+  margin-top: 0.9rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  max-width: 20ch;
+}
+
+/* --- vídeo ---------------------------------------------------------------- */
+
+.video-secao {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-items: end;
+  background: var(--onix);
+  color: var(--marfim);
+  overflow: hidden;
+}
+.video-fundo {
+  position: absolute;
+  inset: -6% 0;
+  z-index: 0;
+}
+.video-fundo img,
+.video-fundo video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.video-veu {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(32, 34, 35, 0.65) 0%,
+    rgba(32, 34, 35, 0.25) 45%,
+    rgba(32, 34, 35, 0.92) 100%
+  );
+  transition: opacity 0.6s var(--ease);
+}
+.video-secao[data-tocando="1"] .video-veu,
+.video-secao[data-tocando="1"] .video-texto {
+  opacity: 0;
+  pointer-events: none;
+}
+.video-texto {
+  position: relative;
+  z-index: 4;
+  padding-block: 6rem clamp(2.5rem, 6vh, 4.5rem);
+  transition: opacity 0.6s var(--ease);
+}
+.video-play {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--marfim);
+  cursor: pointer;
+  font-family: var(--texto);
+}
+.video-play i {
+  display: grid;
+  place-items: center;
+  width: clamp(74px, 8vw, 112px);
+  height: clamp(74px, 8vw, 112px);
+  border: 1px solid rgba(242, 238, 230, 0.55);
+  border-radius: 50%;
+  transition: background-color 0.5s var(--ease),
+    border-color 0.5s var(--ease), transform 0.5s var(--ease);
+}
+.video-play:hover i {
+  background: var(--argila);
+  border-color: var(--argila);
+  transform: scale(1.08);
+}
+.video-secao[data-tocando="1"] .video-play {
+  display: none;
+}
+
+/* --- médico --------------------------------------------------------------- */
+
+.medico {
+  display: grid;
+  align-items: stretch;
+}
+.medico-foto {
+  position: relative;
+  min-height: 60vh;
+  overflow: hidden;
+}
+.medico-foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+.medico-texto {
+  padding: var(--secao) var(--px);
+  display: grid;
+  align-content: center;
+  gap: 1.3rem;
+}
+@media (min-width: 980px) {
+  .medico {
+    grid-template-columns: 0.95fr 1.05fr;
+    min-height: 100svh;
+  }
+  .medico-foto {
+    min-height: 100svh;
+  }
+  .medico-texto {
+    padding-inline: clamp(2.5rem, 5vw, 6rem) var(--px);
+    max-width: 46rem;
+  }
+}
+.credenciais {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem clamp(1.2rem, 3vw, 2.4rem);
+  margin-top: 1rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--linha);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* --- padrão (três pilares) ------------------------------------------------ */
+
+.padrao {
+  padding-block: var(--secao);
+}
+.padrao-grade {
+  display: grid;
+  gap: clamp(1rem, 2vw, 1.6rem);
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+}
+@media (min-width: 900px) {
+  .padrao-grade {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.pilar {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(22rem, 42vw, 34rem);
+  display: grid;
+  align-content: end;
+  gap: 0.9rem;
+  padding: clamp(1.6rem, 3vw, 2.4rem);
+  color: var(--marfim);
+  isolation: isolate;
+}
+.pilar img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.3s var(--ease);
+}
+.pilar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(32, 34, 35, 0.2) 0%,
+    rgba(32, 34, 35, 0.78) 62%,
+    rgba(32, 34, 35, 0.94) 100%
+  );
+}
+.pilar:hover img {
+  transform: scale(1.06);
+}
+.pilar b {
+  font-family: var(--titulo);
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  color: var(--travertino);
+}
+.pilar h3 {
+  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+}
+.pilar p {
+  font-size: 0.96rem;
+  opacity: 0.84;
+  max-width: 34ch;
+}
+
+/* --- galeria fixada, rolagem horizontal ---------------------------------- */
+
+.galeria-pin {
+  position: relative;
+  background: var(--onix);
+  color: var(--marfim);
+}
+.galeria-palco {
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.galeria-trilho {
+  display: flex;
+  gap: clamp(1rem, 2vw, 2rem);
+  padding-inline: var(--px);
+  will-change: transform;
+}
+.galeria-item {
+  flex: 0 0 auto;
+}
+/* A altura manda: a peça ocupa boa parte da tela e a largura sai da proporção.
+   Assim a tira preenche a faixa em vez de flutuar no meio do vazio. */
+.galeria-item .quadro {
+  position: relative;
+  overflow: hidden;
+  height: clamp(18rem, 62vh, 34rem);
+  aspect-ratio: 4 / 3;
+  background: rgba(242, 238, 230, 0.06);
+}
+.galeria-item.alto .quadro {
+  aspect-ratio: 3 / 4;
+}
+.galeria-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.galeria-item figcaption {
+  margin-top: 0.9rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.58;
+}
+.galeria-intro h2 {
+  font-size: clamp(1.9rem, 3.4vw, 3.2rem);
+}
+.galeria-intro {
+  flex: 0 0 auto;
+  width: clamp(19rem, 30vw, 28rem);
+  display: grid;
+  gap: 1.2rem;
+  align-content: center;
+  padding-right: clamp(1rem, 3vw, 3rem);
+}
+
+/* No telemóvel a fixação some: vira uma tira que se arrasta com o dedo, que é
+   o gesto que a pessoa já espera ali. */
+@media (max-width: 899px) {
+  .galeria-palco {
+    height: auto;
+    padding-block: var(--secao);
+    display: block;
+    overflow: visible;
+  }
+  .galeria-trilho {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 1.2rem;
+    transform: none !important;
+  }
+  .galeria-item {
+    width: 74vw;
+    scroll-snap-align: center;
+  }
+  /* Aqui quem manda é a largura da peça. Deixar a altura no comando fazia a
+     moldura sair 698 px de largura dentro de um item de 304 e cavalgar a foto
+     seguinte. */
+  .galeria-item .quadro {
+    height: auto;
+    width: 100%;
+  }
+  /* O cartão de texto fica mais estreito que a tela de propósito: assim entra
+     um pedaço da primeira foto e fica claro que a tira anda para o lado. */
+  .galeria-intro {
+    width: 80vw;
+    padding-right: 0;
+    scroll-snap-align: start;
+  }
+}
+
+/* Seta que balança, só no telemóvel, para anunciar o gesto. */
+.galeria-dica {
+  display: none;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 1rem;
+  padding-inline: var(--px);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+.galeria-dica svg {
+  width: 2rem;
+  animation: acena 1.2s ease-in-out infinite;
+}
+@keyframes acena {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+@media (max-width: 899px) {
+  .galeria-dica {
+    display: flex;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .galeria-dica svg {
+    animation: none;
+  }
+}
+
+/* --- moema ---------------------------------------------------------------- */
+
+.moema {
+  display: grid;
+  align-items: stretch;
+}
+.moema-foto {
+  position: relative;
+  min-height: 55vh;
+  overflow: hidden;
+}
+.moema-foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.moema-texto {
+  padding: var(--secao) var(--px);
+  display: grid;
+  align-content: center;
+  gap: 1.3rem;
+}
+@media (min-width: 980px) {
+  .moema {
+    grid-template-columns: 1.05fr 0.95fr;
+    min-height: 100svh;
+  }
+  .moema-foto {
+    min-height: 100svh;
+    order: 2;
+  }
+  .moema-texto {
+    order: 1;
+    padding-inline: var(--px) clamp(2.5rem, 5vw, 6rem);
+    margin-left: auto;
+    max-width: 46rem;
+  }
+}
+
+/* --- jornada -------------------------------------------------------------- */
+
+.jornada {
+  padding-block: var(--secao);
+  position: relative;
+}
+.jornada-corpo {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+}
+@media (min-width: 1024px) {
+  .jornada-corpo {
+    grid-template-columns: 8rem 1fr;
+    align-items: stretch;
+  }
+}
+/* A rota mede exactamente a lista, da etapa 01 à 06, e fica quieta no lugar.
+   Foi sticky com altura fixa por um tempo: encolhia e mudava de posição
+   enquanto se rolava, e a leitura perdia a referência. */
+.jornada-rota {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .jornada-rota {
+    display: block;
+    position: relative;
+  }
+}
+/* Absoluto de propósito. Em fluxo, o viewBox de 40 por 360 dá ao SVG uma altura
+   intrínseca de ~1.150 px, e era ELE que esticava a linha da grelha: a lista
+   acabava no passo 06 e a seção continuava vazia por mais 350 px. Fora do
+   fluxo, quem mede a seção é a lista, e a rota assenta exactamente sobre ela. */
+/* A altura vai explícita: num elemento substituído (o SVG é um), `height: auto`
+   com `top` e `bottom` juntos é caso sobre-restringido, o browser descarta o
+   `bottom` e usa a altura intrínseca. Era por isso que a linha continuava a
+   passar 300 px abaixo do último passo. */
+.jornada-rota svg {
+  position: absolute;
+  inset: 2.4rem 0;
+  width: 100%;
+  height: calc(100% - 4.8rem);
+}
+.rota-marco {
+  display: block;
+  text-align: center;
+  font-family: var(--texto);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bronze-texto);
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+}
+.rota-marco:last-child {
+  top: auto;
+  bottom: 0;
+}
+.rota-marco::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.75rem;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border: 1px solid var(--argila);
+  border-radius: 50%;
+  background: var(--marfim);
+}
+.rota-marco:last-child::after {
+  bottom: auto;
+  top: -0.75rem;
+}
+.rota-linha {
+  fill: none;
+  stroke: var(--argila);
+  stroke-width: 0.45;
+  stroke-linecap: round;
+}
+.rota-fundo {
+  fill: none;
+  stroke: rgba(32, 34, 35, 0.16);
+  stroke-width: 0.45;
+  stroke-linecap: round;
+}
+.rota-ponto {
+  fill: var(--marfim);
+  stroke: var(--argila);
+  stroke-width: 1.4;
+}
+.rota-rotulo {
+  font-family: var(--texto);
+  font-size: 6px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  fill: var(--bronze-texto);
+}
+.etapas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.etapa {
+  display: grid;
+  gap: 0.7rem 2.5rem;
+  padding-block: clamp(1.6rem, 3vw, 2.4rem);
+  border-top: 1px solid var(--linha);
+  transition: padding-inline 0.6s var(--ease), background-color 0.6s var(--ease);
+}
+.etapa:last-child {
+  border-bottom: 1px solid var(--linha);
+}
+.etapa b {
+  font-family: var(--titulo);
+  font-weight: 400;
+  font-size: 1.05rem;
+  opacity: 0.42;
+}
+.etapa h3 {
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+}
+.etapa p {
+  opacity: 0.78;
+  max-width: 58ch;
+}
+@media (min-width: 900px) {
+  .etapa {
+    grid-template-columns: 3rem 20rem 1fr;
+    align-items: start;
+    padding-inline: 0.5rem;
+  }
+  .etapa:hover {
+    background: rgba(216, 205, 187, 0.3);
+    padding-inline: 1.5rem;
+  }
+}
+
+/* --- roleta de procedimentos --------------------------------------------- */
+
+.roleta-secao {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--onix);
+  color: var(--marfim);
+  touch-action: none;
+}
+@media (min-width: 1024px) {
+  .roleta-secao {
+    touch-action: auto;
+  }
+}
+.roleta-fundos {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.roleta-fundos img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: brightness(0.8);
+  transition: opacity 0.75s var(--ease);
+}
+.roleta-fundos img[data-ativa="1"] {
+  opacity: 1;
+}
+.roleta-veu {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+      90deg,
+      rgba(32, 34, 35, 0.97) 0%,
+      rgba(32, 34, 35, 0.86) 38%,
+      rgba(32, 34, 35, 0.42) 74%,
+      rgba(32, 34, 35, 0.2) 100%
+    ),
+    linear-gradient(0deg, rgba(32, 34, 35, 0.75), transparent 50%);
+}
+.roleta-corpo {
+  position: relative;
+  z-index: 4;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-block: 6rem clamp(2rem, 5vh, 3.5rem);
+}
+.roleta-palco {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+}
+@media (min-width: 1024px) {
+  .roleta-palco {
+    max-width: 40rem;
+  }
+}
+.roleta-marca {
+  position: absolute;
+  left: 26%;
+  top: 50%;
+  width: 2.2rem;
+  height: 1px;
+  background: rgba(242, 238, 230, 0.55);
+  transform: translate(-3.2rem, -50%);
+  z-index: 2;
+}
+.roleta-origem {
+  position: absolute;
+  left: 26%;
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+.roleta-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: left center;
+  white-space: nowrap;
+  font-family: var(--titulo);
+  font-size: clamp(1.4rem, 2.4vw, 2.3rem);
+  line-height: 1;
+  color: rgba(242, 238, 230, 0.4);
+  transition: color 0.25s linear;
+  will-change: transform;
+}
+.roleta-item.ativo {
+  color: var(--marfim);
+}
+.roleta-desc {
+  min-height: 4.5rem;
+  max-width: 42ch;
+  font-size: 0.98rem;
+  opacity: 0.82;
+}
+
+/* --- depoimentos ---------------------------------------------------------- */
+
+.depoimentos {
+  padding-block: var(--secao);
+}
+.depoimentos-grade {
+  display: grid;
+  gap: clamp(0.8rem, 1.6vw, 1.2rem);
+  margin-top: clamp(0.8rem, 1.6vw, 1.2rem);
+}
+@media (min-width: 880px) {
+  .depoimentos-grade {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+/* Os retratos dos vídeos vêm numa fila própria, acima das frases. A altura é
+   fixa para o cartão não virar uma tela inteira por depoimento. */
+/* A grelha ocupa a linha inteira, um cartão por terço. O limite de largura vai
+   no cartão, e não na grelha: em 9/16 cada ponto de largura custa quase o dobro
+   em altura, e a três colunas cheias os retratos ficavam com quase mil pixels. */
+.depo-videos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.6rem, 1.4vw, 1.2rem);
+  margin-top: clamp(2.2rem, 5vw, 3.2rem);
+}
+.depo-videos > * {
+  width: 100%;
+  max-width: 22rem;
+  margin-inline: auto;
+}
+/* Três colunas num telemóvel dariam 120 px por rosto. Vira tira de arrastar. */
+@media (max-width: 700px) {
+  .depo-videos {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(var(--px) * -1);
+    padding-inline: var(--px);
+  }
+  .depo-videos > * {
+    flex: 0 0 auto;
+    width: 62vw;
+    scroll-snap-align: center;
+  }
+
+}
+.depo-video {
+  margin: 0;
+  position: relative;
+}
+/* Vertical desde o início, na proporção do Short. Antes a moldura era baixa e
+   só crescia ao clicar: além de cortar o retrato, mudava a altura do documento
+   em mais de 400 px, e o ScrollTrigger recalculava todos os pins da página. Era
+   daí que vinha o teletransporte ao rolar depois de ver um vídeo. */
+.depo-quadro {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 9 / 16;
+  background: var(--travertino);
+}
+.depo-quadro iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.depo-quadro button {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: block;
+}
+.depo-videos img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  transition: transform 1.3s var(--ease);
+}
+.depo-quadro button:hover img {
+  transform: scale(1.05);
+}
+.depo-quadro button i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: clamp(48px, 4.4vw, 64px);
+  height: clamp(48px, 4.4vw, 64px);
+  border: 1px solid rgba(242, 238, 230, 0.7);
+  border-radius: 50%;
+  color: var(--marfim);
+  background: rgba(32, 34, 35, 0.3);
+  backdrop-filter: blur(3px);
+  transition: background-color 0.45s var(--ease), border-color 0.45s var(--ease),
+    transform 0.45s var(--ease);
+}
+.depo-quadro button:hover i {
+  background: var(--argila);
+  border-color: var(--argila);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+/* No topo, e não no rodapé: os vídeos já trazem legenda gravada embaixo, e as
+   duas linhas colidiam. */
+/* Altura reservada e conteúdo alinhado ao fundo: um dos vídeos está publicado
+   sem nome, e sem isto o rótulo dele subia e desalinhava dos outros dois. */
+.depo-video figcaption {
+  margin-top: 0.75rem;
+  min-height: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bronze-texto);
+}
+
+.depoimento {
+  background: var(--marfim);
+  border: 1px solid var(--linha);
+  display: grid;
+  align-content: start;
+  overflow: hidden;
+}
+.depoimento blockquote {
+  margin: 0;
+  padding: clamp(1.5rem, 2.6vw, 2rem) clamp(1.5rem, 2.6vw, 2rem) 0;
+  font-family: var(--titulo);
+  font-size: clamp(1.1rem, 1.7vw, 1.35rem);
+  line-height: 1.3;
+}
+.depoimento footer {
+  margin: clamp(1.2rem, 2.4vw, 1.7rem) clamp(1.5rem, 2.6vw, 2rem)
+    clamp(1.5rem, 2.6vw, 2rem);
+  border-top: 1px solid var(--linha);
+  padding-top: 1rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.depoimento footer span {
+  display: block;
+  opacity: 0.55;
+  letter-spacing: 0.1em;
+  margin-top: 0.25rem;
+}
+
+/* --- FAQ e CTA sobreposto ------------------------------------------------- */
+
+.faq {
+  background: var(--travertino);
+  padding-block: var(--secao);
+}
+.faq-lista {
+  border-top: 1px solid var(--linha);
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+.faq-item {
+  border-bottom: 1px solid var(--linha);
+}
+.faq-item button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-block: clamp(1.1rem, 2.3vw, 1.6rem);
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--titulo);
+  font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+  line-height: 1.2;
+}
+.faq-item i {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1.4rem;
+  height: 1.4rem;
+}
+.faq-item i::before,
+.faq-item i::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.5s var(--ease);
+}
+.faq-item i::after {
+  transform: rotate(90deg);
+}
+.faq-item[data-aberto="1"] i::after {
+  transform: rotate(0deg);
+}
+.faq-resposta {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.6s var(--ease);
+}
+.faq-item[data-aberto="1"] .faq-resposta {
+  grid-template-rows: 1fr;
+}
+.faq-resposta > div {
+  overflow: hidden;
+}
+.faq-resposta p {
+  max-width: 66ch;
+  padding-bottom: 1.6rem;
+  opacity: 0.82;
+}
+
+.cta {
+  padding-block: var(--secao);
+  background: var(--petroleo);
+  color: var(--marfim);
+}
+.cta-grade {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+@media (min-width: 980px) {
+  .cta-grade {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+}
+
+/* --- formulário ----------------------------------------------------------- */
+
+.formulario {
+  display: grid;
+  gap: 1.1rem;
+}
+.campo {
+  display: grid;
+  gap: 0.45rem;
+}
+.campo label {
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.62;
+}
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: 0.95rem 1.1rem;
+  background: rgba(242, 238, 230, 0.04);
+  border: 1px solid var(--linha-clara);
+  border-radius: 2px;
+  color: inherit;
+  font: inherit;
+  transition: border-color 0.4s var(--ease), background-color 0.4s var(--ease);
+}
+.campo textarea {
+  resize: vertical;
+  min-height: 6rem;
+}
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: 0;
+  border-color: var(--travertino);
+  background: rgba(242, 238, 230, 0.09);
+}
+.campo select option {
+  color: var(--onix);
+}
+.dois {
+  display: grid;
+  gap: 1.1rem;
+}
+@media (min-width: 620px) {
+  .dois {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.aviso {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  opacity: 0.6;
+}
+
+/* --- rodapé --------------------------------------------------------------- */
+
+.rodape {
+  background: var(--onix);
+  color: var(--marfim);
+  padding-block: clamp(3.5rem, 8vw, 6rem) 2.2rem;
+}
+.rodape-topo {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  border-bottom: 1px solid var(--linha-clara);
+}
+@media (min-width: 860px) {
+  .rodape-topo {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+}
+.rodape h4 {
+  font-family: var(--texto);
+  font-size: 0.64rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+.rodape a {
+  text-decoration: none;
+  opacity: 0.85;
+}
+.rodape a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+.rodape .marca-rodape {
+  height: 42px;
+  width: auto;
+  filter: invert(1) brightness(2);
+}
+.rodape-base {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 2rem;
+  justify-content: space-between;
+  padding-top: 1.8rem;
+  font-size: 0.72rem;
+  opacity: 0.5;
+}
+
+/* --- barra fixa no telemóvel --------------------------------------------- */
+
+.barra {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 220;
+  display: flex;
+  gap: 0.55rem;
+  padding: 0.65rem var(--px) calc(0.65rem + env(safe-area-inset-bottom));
+  background: rgb(28, 30, 31);
+  transform: translateY(115%);
+  transition: transform 0.5s var(--ease);
+}
+.barra[data-visivel="1"] {
+  transform: none;
+}
+.barra .btn {
+  flex: 1;
+  padding: 0.9rem 0.9rem;
+  font-size: 0.64rem;
+}
+@media (min-width: 1024px) {
+  .barra {
+    display: none;
+  }
+}
+
+/* --- utilitários ---------------------------------------------------------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Saída da roleta no telemóvel: ali a seção captura o gesto vertical, então
+   precisa de um botão para seguir em frente. */
+.roleta-saida {
+  position: absolute;
+  right: 1rem;
+  bottom: 5.5rem;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 1px solid rgba(242, 238, 230, 0.3);
+  border-radius: 50%;
+  background: rgba(32, 34, 35, 0.45);
+  backdrop-filter: blur(6px);
+  color: var(--marfim);
+  cursor: pointer;
+}
+.roleta-saida svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+@media (min-width: 1024px) {
+  .roleta-saida {
+    display: none;
+  }
+}
+
+/* Sem animação a roda não consegue distribuir os nomes pelo arco, então ela
+   passa a ser uma lista simples. */
+.roleta-secao[data-estatico="1"] .roleta-origem {
+  position: static;
+  width: auto;
+  height: auto;
+  display: grid;
+  gap: 0.4rem;
+  align-content: center;
+  height: 100%;
+}
+.roleta-secao[data-estatico="1"] .roleta-item {
+  position: static;
+  transform: none !important;
+  opacity: 1 !important;
+  color: var(--marfim);
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+}
+.roleta-secao[data-estatico="1"] .roleta-marca {
+  display: none;
+}
+.roleta-secao[data-estatico="1"] .roleta-palco {
+  touch-action: auto;
+}
+
+/* --- mosaico do consultório ---------------------------------------------- */
+
+.consultorio {
+  padding-block: var(--secao);
+}
+.consultorio-cabeca {
+  display: grid;
+  gap: 1.2rem;
+  max-width: min(var(--largo), 68rem);
+  margin-inline: auto;
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+}
+/* Sangra até a borda da janela de propósito: aqui o conjunto é o argumento. */
+.mosaico {
+  display: grid;
+  gap: clamp(0.4rem, 0.8vw, 0.9rem);
+  grid-template-columns: repeat(2, 1fr);
+  padding-inline: clamp(0.4rem, 0.8vw, 0.9rem);
+}
+.mosaico figure {
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+}
+.mosaico img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.4s var(--ease);
+}
+.mosaico figure:hover img {
+  transform: scale(1.05);
+}
+.mosaico figcaption {
+  position: absolute;
+  left: 1rem;
+  bottom: 0.85rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--marfim);
+  text-shadow: 0 1px 12px rgba(32, 34, 35, 0.8);
+}
+.mosaico figure {
+  aspect-ratio: 4 / 3;
+}
+@media (min-width: 900px) {
+  .mosaico {
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 20vh;
+  }
+  .mosaico figure {
+    aspect-ratio: auto;
+  }
+  .mosaico figure:nth-child(1) {
+    grid-column: span 3;
+    grid-row: span 2;
+  }
+  .mosaico figure:nth-child(2) {
+    grid-column: span 3;
+    grid-row: span 1;
+  }
+  .mosaico figure:nth-child(3) {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .mosaico figure:nth-child(4) {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+  .mosaico figure:nth-child(5) {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .mosaico figure:nth-child(6) {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+  .mosaico figure:nth-child(7) {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+}
+
+.depo-video figcaption b {
+  display: block;
+  font-family: var(--titulo);
+  font-weight: 400;
+  font-size: 1.05rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--onix);
+  margin-bottom: 0.2rem;
+}
