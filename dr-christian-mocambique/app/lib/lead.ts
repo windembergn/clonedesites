@@ -1,11 +1,18 @@
 "use client";
 
 /* ---------------------------------------------------------------------------
-   Envio do lead para o webhook do Make.
+   Envio do lead. Vai para dois sítios, e os dois em paralelo.
 
-   A Lumivie faz isto pelo servidor dela (`server/src/lead-webhook.js`), que
-   guarda o lead no banco e depois espelha para os webhooks externos. Aqui não
-   há servidor: a página é estática, então o navegador fala direto com o Make.
+   1. **A nossa planilha**, por `/api/lead`, que é um processo na VPS. É a mesma
+      forma da página da Sofer (`api/leads.ts` na Vercel): o navegador posta num
+      endereço do servidor e é o servidor que fala com o Google. A credencial
+      nunca chega ao navegador, e é por isso que esta peça existe: uma página
+      estática não pode guardar segredo nenhum.
+   2. **O webhook do Make**, que é de outra pessoa e só recebe. Não escreve na
+      planilha, e continua aqui porque quem tem acesso a ele conta com o envio.
+
+   Os dois em paralelo, e não em fila, porque a paciente está a caminho do
+   WhatsApp: somar os dois tempos atrasaria a navegação sem ganhar nada.
 
    Duas coisas foram copiadas de lá de propósito, porque o cenário do Make já
    está montado em cima delas:
@@ -22,6 +29,12 @@
 --------------------------------------------------------------------------- */
 
 const WEBHOOK = "https://hook.us2.make.com/ys6hz4dj7kppybsnod8i9mim621b21cg";
+
+/* Caminho relativo com o basePath à frente. A página é servida sob
+   `/mocambique`, e sem isto o pedido bateria na raiz do domínio, que é outra
+   página. O `NEXT_PUBLIC_BASE_PATH` é fixado no build pelo `next.config.mjs`. */
+const ENDERECO_PLANILHA = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/lead`;
+
 const TIMEOUT_MS = 4000;
 
 const texto = (v: unknown) => {
@@ -145,8 +158,12 @@ export function montarPayload(d: DadosLead) {
 
 /** Devolve sempre. Nunca atira, nunca segura a navegação. */
 export async function enviarLead(d: DadosLead) {
-  try {
-    await fetch(WEBHOOK, {
+  // Um payload só, mandado aos dois. O corpo vai como array de um item também
+  // para a nossa planilha, para não haver dois formatos a manter.
+  const corpo = JSON.stringify([montarPayload(d)]);
+
+  const manda = (url: string) =>
+    fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       // `keepalive` deixa o pedido terminar depois de a página navegar para o
@@ -154,9 +171,10 @@ export async function enviarLead(d: DadosLead) {
       // lento.
       keepalive: true,
       signal: AbortSignal.timeout(TIMEOUT_MS),
-      body: JSON.stringify([montarPayload(d)]),
+      body: corpo,
     });
-  } catch {
-    /* de propósito em silêncio */
-  }
+
+  // `allSettled` e não `all`: um dos dois fora do ar não pode levar o outro
+  // atrás, e nenhum dos dois pode virar erro na cara da paciente.
+  await Promise.allSettled([manda(ENDERECO_PLANILHA), manda(WEBHOOK)]);
 }

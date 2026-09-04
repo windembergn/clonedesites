@@ -237,9 +237,13 @@ otimizar por lead, falta um `fbq('track', 'Lead')` no envio do formulário, em
 
 - Todos os botões de WhatsApp usam o **link de rastreio da Tintim**. Ele não
   aceita `?text=`, então a mensagem deixou de ir pré-escrita.
-- Quem leva o contexto agora é o **webhook do Make** (`app/lib/lead.ts`). O
-  formulário regista o lead e só depois encaminha para o WhatsApp, na mesma
-  ordem do formulário da Lumivie.
+- Quem leva o contexto agora é o envio de `app/lib/lead.ts`. O formulário
+  regista o lead e só depois encaminha para o WhatsApp, na mesma ordem do
+  formulário da Lumivie.
+- O lead vai para **dois sítios, em paralelo**: `/api/lead`, que é nosso e
+  escreve na planilha, e o **webhook do Make**, que é de outra pessoa e só
+  recebe. Em paralelo e não em fila porque a paciente está a caminho do
+  WhatsApp: somar os dois tempos atrasaria a navegação sem ganhar nada.
 - O corpo vai como **array de um item**, e cada campo aparece em `snake_case` e
   em `camelCase`. As duas coisas são deliberadas: o Make infere a estrutura do
   webhook a partir da primeira amostra, e o cenário do cliente foi montado nesse
@@ -284,49 +288,49 @@ tropeçou nisto:
 - A gravação usa `valueInputOption=RAW`. Com `USER_ENTERED` uma mensagem
   começada por `=` viraria fórmula e um telemóvel perderia o `+`.
 
-### O que o cenário do Make tem de mapear
+### Quem escreve na planilha
 
-O webhook já recebe tudo. Falta o módulo *Google Sheets > Add a Row* apontar
-para esta planilha e mapear, **nesta ordem**:
+O **Make não escreve na planilha**. Ele só recebe, é de outra pessoa, e continua
+a receber porque quem tem acesso a ele conta com isso.
 
-| Coluna | Campo do webhook |
-|--------|------------------|
-| Recebido em | `formatDate(now; "DD/MM/YYYY HH:mm"; "Africa/Maputo")` |
-| Nome | `nome` |
-| E-mail | `email` |
-| Telemóvel | `telefone` |
-| WhatsApp | `whatsapp` |
-| Cidade | `cidade` |
-| País | `pais` |
-| Procedimento | `procedimento` |
-| Mensagem | `mensagem` |
-| Origem | `origem` |
-| Canal | `channel` |
-| utm_source | `utm_source` |
-| utm_medium | `utm_medium` |
-| utm_campaign | `utm_campaign` |
-| utm_term | `utm_term` |
-| utm_content | `utm_content` |
-| URL completa | `urlCompleta` |
-| Referrer | `referrer` |
-| Navegador | `user_agent` |
-| Chave | `email` + `|` + `telefone` |
+Quem escreve é `servidor/lead.cjs`, na mesma forma da página da Sofer
+(`api/leads.ts` na Vercel): o navegador posta num endereço do servidor e é o
+servidor que fala com o Google. A razão de a peça existir é uma só, e vale a
+pena não a esquecer: **uma página estática não pode guardar segredo nenhum**, e
+a chave da conta de serviço tem de ficar do lado de lá.
 
-`urlCompleta` é a única que traz a query como a paciente chegou, `fbclid`
-incluído: é ela que responde de que anúncio veio a pessoa quando as colunas
-`utm_*` não bastam.
+A diferença para a Sofer é onde isto corre. Lá havia Vercel, com funções
+prontas. Aqui a página é ficheiro estático atrás do nginx, então o mesmo papel é
+feito por um processo próprio, alcançado só pelo nginx pela rede interna, **sem
+porta publicada**. Já houve invasão nesta operação por porta exposta, e um
+processo que segura credencial do Google não é sítio para repetir isso.
 
-A **Chave** existe para enxergar duplicado sem barrar. Quem carrega duas vezes
-no botão gera duas linhas; barrar arriscaria perder um lead legítimo, e perder
-lead é pior que ver linha repetida. Um filtro na coluna revela os repetidos.
+```
+navegador ──┬─→ /api/lead ──→ servidor/lead.cjs ──→ Google Sheets
+            └─→ webhook do Make (de outra pessoa, só recebe)
+```
 
-⚠️ O Make infere a estrutura do webhook pela primeira amostra recebida. Como
-`email` e `telefone` iam a `null` antes, o cenário pode precisar de
-**redeterminar a estrutura de dados** para os dois aparecerem na lista de
-mapeamento.
+Três decisões dentro do `lead.cjs` que não se devem desfazer sem pensar:
+
+- **Responde `200` antes de falar com o Google.** Quando isto corre, a paciente
+  já carregou no botão. Um Google lento não pode virar erro na cara dela nem
+  segurar a navegação. Se a gravação falhar, a falha e o payload inteiro vão
+  para o log do contentor, que é onde alguém os pode recuperar.
+- **Teto de 8 pedidos por minuto por IP**, em memória. Não é anti-abuso a
+  sério, é para um script que descubra o endereço não encher a planilha da
+  equipa em segundos.
+- **`valueInputOption=RAW`.** Com `USER_ENTERED` uma mensagem começada por `=`
+  viraria fórmula e um telemóvel perderia o `+` e os zeros à esquerda.
+
+As colunas vivem em `servidor/colunas.cjs`, partilhadas entre o `planilha.cjs`
+(que monta o cabeçalho) e o `lead.cjs` (que grava as linhas). Ter a lista num
+lugar só é o que impede o cabeçalho e as linhas de deixarem de bater certo.
 
 ⚠️ Coluna nova entra sempre no **fim**. Inserir no meio desalinha as linhas já
 gravadas, e ninguém repara até filtrar a coluna errada.
+
+O `docker-compose.yml`, o `.env` e a rota do nginx ficam **fora deste
+repositório**, que é público.
 
 ## Notas de desempenho
 
