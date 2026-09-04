@@ -111,7 +111,12 @@ async function cabecalho(t) {
   const igual =
     atual.length === querido.length && atual.every((v, i) => v === querido[i]);
 
-  if (igual) return console.log("cabeçalho já está como devia, nada a fazer.");
+  /* `--reformatar` reaplica cores e larguras sem tocar nos títulos. Serve para
+     consertar a formatação de uma planilha cujo cabeçalho já está certo. */
+  if (igual && !process.argv.includes("--reformatar"))
+    return console.log(
+      "cabeçalho já está como devia, nada a fazer. (--reformatar reaplica o formato)"
+    );
   if (atual.length) {
     console.log("cabeçalho atual :", JSON.stringify(atual));
     console.log("ATENÇÃO: vai ser SUBSTITUÍDO. Confira se alguma coluna muda de");
@@ -148,6 +153,27 @@ async function cabecalho(t) {
             },
           },
           fields: "userEnteredFormat(textFormat,backgroundColor,horizontalAlignment)",
+        },
+      },
+      /**
+       * Tudo abaixo do cabeçalho volta ao normal: fundo branco, texto preto,
+       * sem negrito.
+       *
+       * Não é enfeite, é correção de um comportamento do Sheets: o `append`
+       * herda o formato da linha de cima. Sem isto, o primeiro lead nascia com
+       * o fundo escuro do cabeçalho, o segundo herdava do primeiro, e a
+       * planilha inteira ficava a parecer cabeçalho. Só a linha 1 é pintada.
+       */
+      {
+        repeatCell: {
+          range: { sheetId: id, startRowIndex: 1 },
+          cell: {
+            userEnteredFormat: {
+              backgroundColor: { red: 1, green: 1, blue: 1 },
+              textFormat: { bold: false, foregroundColor: { red: 0, green: 0, blue: 0 } },
+            },
+          },
+          fields: "userEnteredFormat(backgroundColor,textFormat(bold,foregroundColor))",
         },
       },
       ...COLUNAS.map((c, i) => ({

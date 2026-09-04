@@ -322,6 +322,13 @@ Três decisões dentro do `lead.cjs` que não se devem desfazer sem pensar:
 - **`valueInputOption=RAW`.** Com `USER_ENTERED` uma mensagem começada por `=`
   viraria fórmula e um telemóvel perderia o `+` e os zeros à esquerda.
 
+Só a **linha 1** é pintada; da 2 para baixo é fundo branco e texto preto. Isso é
+aplicado de propósito, não é o padrão: o `append` do Sheets **herda o formato da
+linha de cima**, então sem o reset o primeiro lead nascia com o fundo escuro do
+cabeçalho, o segundo herdava do primeiro, e a planilha inteira ficava a parecer
+cabeçalho. `node planilha.cjs cabecalho --reformatar --aplicar` reaplica cores e
+larguras sem tocar nos títulos.
+
 As colunas vivem em `servidor/colunas.cjs`, partilhadas entre o `planilha.cjs`
 (que monta o cabeçalho) e o `lead.cjs` (que grava as linhas). Ter a lista num
 lugar só é o que impede o cabeçalho e as linhas de deixarem de bater certo.
