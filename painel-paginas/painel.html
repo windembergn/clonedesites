@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Páginas Lumivie</title>
+<title>Sites Lumivie</title>
 <link rel="icon" href="/favicon.svg">
 <style>
   /* As fontes vêm da própria pasta do site: o painel mora no mesmo domínio. */
@@ -15,28 +15,34 @@
   :root {
     --fundo: #e9e4da; --cartao: #f6f3ee; --linha: #dfd9cf; --texto: #1e1e1e; --suave: #6f625b;
     --marca: #5b2c1e; --marca-texto: #fff; --ok: #2f6b3a; --ok-fundo: #dcebdc; --perigo: #9b2c2c;
-    --codigo: #fffdf9;
+    --codigo: #fffdf9; --aviso: #8a5a00; --aviso-fundo: #f6ead2;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --fundo: #1a1614; --cartao: #231e1b; --linha: #3a322d; --texto: #eee8e1; --suave: #a79a91;
       --marca: #bd8d6a; --marca-texto: #1a1614; --ok: #8fcf98; --ok-fundo: #23372a; --perigo: #e28a8a;
-      --codigo: #1d1917;
+      --codigo: #1d1917; --aviso: #f0c46b; --aviso-fundo: #3a2f1a;
     }
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
   body { background: var(--fundo); color: var(--texto); font: 15px/1.45 "Avenir Next", system-ui, sans-serif; }
-  h1, h2 { font-family: "Apple Garamond", Georgia, serif; font-weight: 400; margin: 0; }
-  button, input, textarea { font: inherit; color: inherit; }
+  h1, h2, h3 { font-family: "Apple Garamond", Georgia, serif; font-weight: 400; margin: 0; }
+  button, input, textarea, select { font: inherit; color: inherit; }
   button { cursor: pointer; border: 1px solid var(--linha); background: var(--cartao); border-radius: 8px; padding: 8px 14px; }
   button:hover { border-color: var(--suave); }
   button.primario { background: var(--marca); color: var(--marca-texto); border-color: var(--marca); font-weight: 600; }
   button.perigo { color: var(--perigo); }
+  button.link { border: 0; background: none; padding: 0; color: inherit; text-align: left; }
+  button.link:hover { text-decoration: underline; }
   button:disabled { opacity: .5; cursor: default; }
   input[type=text], input[type=password] { width: 100%; padding: 10px 12px; border: 1px solid var(--linha); border-radius: 8px; background: var(--codigo); }
+  select { padding: 9px 12px; border: 1px solid var(--linha); border-radius: 8px; background: var(--codigo); }
+  a { color: var(--marca); }
   label.campo { display: block; font-size: 13px; color: var(--suave); margin: 14px 0 6px; }
   .erro { color: var(--perigo); font-size: 14px; min-height: 20px; margin-top: 10px; }
+  .suave { color: var(--suave); }
+  .pequeno { font-size: 13px; }
   [hidden] { display: none !important; }
 
   /* Entrar */
@@ -46,19 +52,28 @@
   #entrar p { color: var(--suave); margin: 4px 0 8px; font-size: 14px; }
   #entrar button { width: 100%; margin-top: 18px; padding: 11px; }
 
-  /* Painel */
+  /* Estrutura */
   #app { display: grid; grid-template-rows: auto 1fr; height: 100%; }
-  header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--linha); background: var(--cartao); }
-  header h1 { font-size: 24px; flex: 1; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--linha); background: var(--cartao); }
+  header h1 { font-size: 24px; margin-right: 8px; }
+  .abas { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+  .aba { border-color: transparent; background: transparent; }
+  .aba.ativa { background: var(--fundo); border-color: var(--linha); font-weight: 600; }
+  .quem { color: var(--suave); font-size: 14px; }
   .corpo { display: grid; grid-template-columns: 300px 1fr; min-height: 0; }
   aside { border-right: 1px solid var(--linha); overflow: auto; padding: 8px; }
+  .aside-topo { padding: 4px 4px 10px; }
+  .aside-topo button { width: 100%; }
   .item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; cursor: pointer; }
   .item:hover { background: var(--cartao); }
   .item.atual { background: var(--cartao); outline: 1px solid var(--linha); }
   .item .nome { flex: 1; min-width: 0; }
   .item .nome b { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .item .nome small { color: var(--suave); font-size: 12px; }
+  .item .nome small { color: var(--suave); font-size: 12px; display: block; }
   .vazio { color: var(--suave); padding: 16px; font-size: 14px; }
+  main { display: flex; flex-direction: column; min-height: 0; overflow: auto; padding: 16px; gap: 12px; }
+  .tela-larga { overflow: auto; padding: 16px; min-height: 0; }
+  .tela-larga h2 { font-size: 26px; margin-bottom: 12px; }
 
   .chave { position: relative; width: 38px; height: 22px; flex: none; }
   .chave input { opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; position: relative; z-index: 1; }
@@ -68,33 +83,77 @@
   .chave input:checked + span::after { transform: translateX(16px); }
   .chave input:focus-visible + span { outline: 2px solid var(--marca); outline-offset: 2px; }
 
-  main { display: flex; flex-direction: column; min-height: 0; padding: 16px; gap: 12px; }
-  .barra { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-  .endereco { display: flex; align-items: center; flex: 1 1 320px; border: 1px solid var(--linha); border-radius: 8px; background: var(--codigo); overflow: hidden; }
+  .barra { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .endereco { display: flex; align-items: center; flex: 1 1 280px; border: 1px solid var(--linha); border-radius: 8px; background: var(--codigo); overflow: hidden; }
   .endereco span { color: var(--suave); white-space: nowrap; }
   .endereco span:first-of-type:not(:empty) { padding-left: 12px; }
   .endereco span:last-of-type:not(:empty) { padding-right: 12px; }
   .endereco input { border: 0; border-radius: 0; padding: 10px 2px; background: transparent; min-width: 0; }
   .endereco span:first-of-type:empty + input { padding-left: 12px; }
-  /* No subdomínio o nome cresce com o texto, para o ".velacademy.com.br" ficar
-     colado nele e o endereço ler-se inteiro. */
+  /* No subdomínio o nome cresce com o texto, para o ".dominio" ficar colado
+     nele e o endereço ler-se inteiro. */
   .endereco.sub input { field-sizing: content; flex: 0 1 auto; width: auto; min-width: 8ch; }
-  select { font: inherit; color: inherit; padding: 10px 12px; border: 1px solid var(--linha); border-radius: 8px; background: var(--codigo); }
   .estado { display: flex; align-items: center; gap: 8px; font-size: 14px; }
   .aviso { font-size: 13px; color: var(--suave); }
-  .aviso a { color: var(--marca); }
-  .editor { flex: 1; display: grid; grid-template-columns: 1fr; gap: 12px; min-height: 0; }
-  .editor.com-previa { grid-template-columns: 1fr 1fr; }
-  textarea { width: 100%; height: 100%; min-height: 320px; resize: none; padding: 12px; border: 1px solid var(--linha); border-radius: 10px; background: var(--codigo); font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 2; }
-  iframe { width: 100%; height: 100%; min-height: 320px; border: 1px solid var(--linha); border-radius: 10px; background: #fff; }
-  #solto { position: fixed; inset: 0; background: color-mix(in srgb, var(--marca) 20%, transparent); border: 3px dashed var(--marca); display: grid; place-items: center; font-size: 20px; pointer-events: none; }
-  #toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--texto); color: var(--fundo); padding: 10px 16px; border-radius: 10px; font-size: 14px; max-width: calc(100% - 32px); }
+  .alerta { font-size: 14px; color: var(--aviso); background: var(--aviso-fundo); border-radius: 8px; padding: 8px 12px; }
+  .cartao { background: var(--cartao); border: 1px solid var(--linha); border-radius: 12px; padding: 16px; }
+  .cartao h3 { font-size: 20px; margin-bottom: 4px; }
+
+  /* Arquivos */
+  .trilha { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 14px; }
+  .trilha button { padding: 2px 6px; border: 0; background: none; color: var(--marca); }
+  .trilha button:last-child { color: var(--texto); font-weight: 600; cursor: default; }
+  .tabela { overflow-x: auto; border: 1px solid var(--linha); border-radius: 10px; background: var(--cartao); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--linha); vertical-align: middle; }
+  th { color: var(--suave); font-weight: 600; font-size: 13px; white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  td.acoes { white-space: nowrap; text-align: right; }
+  td.acoes button, td select { padding: 4px 10px; font-size: 13px; }
+  .nowrap { white-space: nowrap; }
+  .icone { display: inline-block; width: 1.4em; text-align: center; margin-right: 4px; }
+  th.marca, td.marca { width: 36px; padding-right: 0; }
+  td.marca input, th.marca input { width: 16px; height: 16px; cursor: pointer; vertical-align: middle; }
+  #arquivos tbody tr.marcado { background: color-mix(in srgb, var(--marca) 9%, transparent); }
+  #arquivos tbody tr.alvo, .trilha button.alvo { outline: 2px dashed var(--marca); outline-offset: -2px; }
+  #arquivos tbody tr.recortado { opacity: .5; }
+  .faixa { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; font-size: 14px; }
+  .faixa button { padding: 5px 12px; font-size: 14px; }
+  .faixa.selecao { background: var(--cartao); border: 1px solid var(--marca); }
+  .faixa.colar { background: var(--ok-fundo); color: var(--ok); }
+  .faixa.colar button:not(.primario) { color: var(--texto); }
+  kbd { font: 12px ui-monospace, Menlo, Consolas, monospace; border: 1px solid var(--linha); border-radius: 4px; padding: 0 4px; background: var(--codigo); }
+  .progresso { height: 6px; border-radius: 99px; background: var(--linha); overflow: hidden; }
+  .progresso div { height: 100%; background: var(--ok); width: 0; transition: width .2s; }
+  .etiqueta { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 12px; background: var(--fundo); border: 1px solid var(--linha); white-space: nowrap; }
+  .etiqueta.ok { background: var(--ok-fundo); color: var(--ok); border-color: transparent; }
+  .etiqueta.aviso { background: var(--aviso-fundo); color: var(--aviso); border-color: transparent; }
+
+  #editor { position: fixed; inset: 0; z-index: 10; background: var(--fundo); display: flex; flex-direction: column; padding: 12px 16px; gap: 10px; }
+  #editor textarea { flex: 1; width: 100%; resize: none; padding: 12px; border: 1px solid var(--linha); border-radius: 10px; background: var(--codigo); font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 2; }
+  #editor .caminho { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .linha-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .linha-form input[type=text] { width: auto; flex: 1 1 180px; }
+  dialog { border: 1px solid var(--linha); border-radius: 14px; background: var(--cartao); color: var(--texto); padding: 24px; width: min(440px, calc(100% - 32px)); }
+  dialog::backdrop { background: #0006; }
+  dialog h2 { font-size: 24px; }
+  dialog p { color: var(--suave); font-size: 14px; margin: 6px 0 0; }
+  dialog .botoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+  dialog select { width: 100%; }
+  .dominio { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px; border-bottom: 1px solid var(--linha); }
+  .dominio:last-child { border-bottom: 0; }
+  .dominio b { flex: 1 1 200px; }
+  #solto { position: fixed; inset: 0; z-index: 20; background: color-mix(in srgb, var(--marca) 20%, transparent); border: 3px dashed var(--marca); display: grid; place-items: center; font-size: 20px; pointer-events: none; }
+  #toast { position: fixed; z-index: 30; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--texto); color: var(--fundo); padding: 10px 16px; border-radius: 10px; font-size: 14px; max-width: calc(100% - 32px); }
 
   @media (max-width: 760px) {
     .corpo { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-    aside { border-right: 0; border-bottom: 1px solid var(--linha); max-height: 34vh; }
-    .editor.com-previa { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    aside { border-right: 0; border-bottom: 1px solid var(--linha); max-height: 30vh; }
     header h1 { font-size: 20px; }
+    .abas { order: 3; flex-basis: 100%; }
+    .quem { display: none; }
+    .col-data { display: none; }
   }
 </style>
 </head>
@@ -102,8 +161,8 @@
 
 <section id="entrar" hidden>
   <form id="form-entrar">
-    <h1>Páginas Lumivie</h1>
-    <p>Suba um HTML e ele fica no ar no endereço que escolher.</p>
+    <h1>Sites Lumivie</h1>
+    <p>Envie os arquivos do site e ele fica no ar no endereço que escolher.</p>
     <label class="campo" for="usuario">Usuário</label>
     <input type="text" id="usuario" autocomplete="username" autocapitalize="off" required>
     <label class="campo" for="senha">Senha</label>
@@ -115,66 +174,202 @@
 
 <section id="app" hidden>
   <header>
-    <h1>Páginas Lumivie</h1>
-    <button class="primario" id="nova">Nova página</button>
+    <h1>Sites Lumivie</h1>
+    <nav class="abas" aria-label="Seções">
+      <button class="aba ativa" data-tela="sites">Sites</button>
+      <button class="aba" data-tela="usuarios" data-admin hidden>Usuários</button>
+      <button class="aba" data-tela="historico" data-admin hidden>Histórico</button>
+      <button class="aba" data-tela="dominios" data-admin data-dns hidden>Domínios</button>
+    </nav>
+    <span class="quem" id="quem"></span>
+    <button id="minha-senha">Minha senha</button>
     <button id="sair">Sair</button>
   </header>
-  <div class="corpo">
-    <aside id="lista" aria-label="Páginas"></aside>
+
+  <!-- Sites -->
+  <div class="corpo tela" id="tela-sites">
+    <aside aria-label="Sites">
+      <div class="aside-topo"><button class="primario" id="novo-site">Novo site</button></div>
+      <div id="lista"></div>
+    </aside>
     <main>
-      <div id="sem-pagina" class="vazio">Escolha uma página na lista, clique em <b>Nova página</b> ou arraste um ficheiro .html para esta janela.</div>
-      <form id="form-pagina" hidden style="display:contents">
+      <div id="sem-site" class="vazio">Escolha um site na lista ou clique em <b>Novo site</b>.</div>
+
+      <!-- Criar site -->
+      <form id="form-novo" class="cartao" hidden>
+        <h3>Novo site</h3>
+        <p class="aviso" style="margin:0 0 12px">Escolha o endereço. Depois de criado, envie os arquivos (index.html, pastas, imagens, CSS, JS, ou um .zip com tudo).</p>
         <div class="barra">
-          <select id="dominio" aria-label="Onde publicar"></select>
-          <label class="endereco" title="Endereço da página">
-            <span id="antes"></span>
-            <input type="text" id="slug" placeholder="nome-da-pagina" autocapitalize="off" spellcheck="false" required>
-            <span id="depois"></span>
+          <select id="novo-onde" aria-label="Onde publicar"></select>
+          <label class="endereco" id="novo-endereco">
+            <span></span>
+            <input type="text" id="novo-slug" placeholder="nome-do-site" autocapitalize="off" spellcheck="false" required>
+            <span></span>
           </label>
+        </div>
+        <div class="barra" style="margin-top:12px">
           <div class="estado">
-            <label class="chave"><input type="checkbox" id="ativa"><span></span></label>
-            <label for="ativa" id="rotulo-ativa">Desligada</label>
+            <label class="chave"><input type="checkbox" id="novo-ativo" checked><span></span></label>
+            <label for="novo-ativo">Já colocar no ar</label>
+          </div>
+          <span style="flex:1"></span>
+          <button type="button" id="novo-cancelar">Cancelar</button>
+          <button type="submit" class="primario" id="novo-criar">Criar site</button>
+        </div>
+      </form>
+
+      <!-- Site aberto -->
+      <div id="site" hidden style="display:contents">
+        <div class="barra">
+          <select id="onde" aria-label="Onde publicar"></select>
+          <label class="endereco" id="endereco" title="Endereço do site">
+            <span></span>
+            <input type="text" id="slug" autocapitalize="off" spellcheck="false">
+            <span></span>
+          </label>
+          <button id="salvar-endereco" hidden>Mudar endereço</button>
+          <div class="estado">
+            <label class="chave"><input type="checkbox" id="ativo"><span></span></label>
+            <label for="ativo" id="rotulo-ativo">Desligado</label>
           </div>
         </div>
         <div class="barra">
-          <button type="button" id="enviar">Enviar ficheiro .html</button>
-          <input type="file" id="ficheiro" accept=".html,.htm,text/html" hidden>
-          <button type="button" id="previa">Pré-visualizar</button>
+          <span class="aviso" id="aviso" style="flex:1"></span>
+          <button id="previa">Pré-visualizar</button>
+          <button class="perigo" id="apagar-site">Apagar site</button>
+        </div>
+        <div class="alerta" id="sem-index" hidden>Este site ainda não tem <b>index.html</b> na pasta principal. É esse arquivo que abre no endereço.</div>
+
+        <div class="barra">
+          <nav class="trilha" id="trilha" aria-label="Pasta atual"></nav>
           <span style="flex:1"></span>
-          <button type="button" class="perigo" id="apagar">Apagar</button>
-          <button type="submit" class="primario" id="salvar">Salvar</button>
+          <button id="enviar-arquivos">Enviar arquivos</button>
+          <button id="enviar-pasta">Enviar pasta</button>
+          <button id="enviar-zip">Enviar .zip</button>
+          <button id="nova-pasta">Nova pasta</button>
+          <button id="novo-arquivo">Novo arquivo</button>
+          <input type="file" id="in-arquivos" multiple hidden>
+          <input type="file" id="in-pasta" webkitdirectory multiple hidden>
+          <input type="file" id="in-zip" accept=".zip,application/zip" hidden>
         </div>
-        <div class="aviso" id="aviso"></div>
-        <div class="editor" id="editor">
-          <textarea id="html" spellcheck="false" placeholder="Cole aqui o HTML da página"></textarea>
-          <iframe id="quadro" title="Pré-visualização" hidden
-                  sandbox="allow-scripts allow-forms allow-popups"></iframe>
+        <div class="faixa selecao" id="barra-selecao" hidden>
+          <b id="sel-quantos" style="margin-right:4px"></b>
+          <button id="sel-copiar" title="Ctrl+C">Copiar</button>
+          <button id="sel-recortar" title="Ctrl+X">Recortar</button>
+          <button id="sel-mover">Mover para…</button>
+          <button id="sel-copiar-para">Copiar para…</button>
+          <button class="perigo" id="sel-apagar" title="Delete">Apagar</button>
+          <span style="flex:1"></span>
+          <button id="sel-limpar" title="Esc">Limpar seleção</button>
         </div>
-      </form>
+        <div class="faixa colar" id="barra-colar" hidden>
+          <span id="colar-texto" style="flex:1"></span>
+          <button class="primario" id="colar" title="Ctrl+V">Colar aqui</button>
+          <button id="colar-cancelar">Cancelar</button>
+        </div>
+        <div id="envio" hidden>
+          <div class="barra pequeno"><span id="envio-texto" style="flex:1"></span></div>
+          <div class="progresso"><div id="envio-barra"></div></div>
+        </div>
+        <div class="tabela"><table id="arquivos"></table></div>
+        <p class="aviso">Marque vários para copiar, recortar, mover ou apagar de uma vez (<kbd>Shift</kbd> marca um intervalo). Arraste itens da lista para cima de uma pasta, ou da trilha acima, para movê-los. Atalhos: <kbd>Ctrl+A</kbd> <kbd>Ctrl+C</kbd> <kbd>Ctrl+X</kbd> <kbd>Ctrl+V</kbd> <kbd>Delete</kbd>.<br>
+        Arraste arquivos, pastas ou um .zip do computador para esta janela para enviar à pasta aberta. Limite de 50 MB por arquivo e 100 MB por .zip.</p>
+      </div>
     </main>
+  </div>
+
+  <!-- Usuários -->
+  <div class="tela tela-larga" id="tela-usuarios" hidden>
+    <h2>Usuários</h2>
+    <form id="form-usuario" class="linha-form" autocomplete="off">
+      <input type="text" id="novo-usuario" placeholder="usuário (ex.: maria)" autocapitalize="off" spellcheck="false" required>
+      <input type="text" id="nova-senha" placeholder="senha (mínimo 8)" autocapitalize="off" spellcheck="false" required>
+      <button type="button" id="gerar-senha">Gerar senha</button>
+      <select id="novo-papel" aria-label="Papel">
+        <option value="editor">Editor</option>
+        <option value="admin">Administrador</option>
+      </select>
+      <button class="primario" type="submit">Criar usuário</button>
+    </form>
+    <p class="aviso" style="margin:0 0 14px">Editor cria sites, envia e apaga arquivos, liga e desliga. Administrador também gerencia usuários, vê o histórico e ativa domínios.</p>
+    <div class="tabela"><table id="tabela-usuarios"></table></div>
+  </div>
+
+  <!-- Histórico -->
+  <div class="tela tela-larga" id="tela-historico" hidden>
+    <div class="linha-form">
+      <h2 style="flex:1;margin:0">Histórico</h2>
+      <select id="filtro-usuario" aria-label="Filtrar por usuário"></select>
+    </div>
+    <p class="aviso" style="margin:0 0 14px">Tudo o que foi feito no painel, do mais recente para o mais antigo. Horário de Brasília.</p>
+    <div class="tabela"><table id="tabela-historico"></table></div>
+  </div>
+
+  <!-- Domínios -->
+  <div class="tela tela-larga" id="tela-dominios" hidden>
+    <h2>Domínios</h2>
+    <p class="aviso" style="margin:0 0 14px">Os domínios da conta Cloudflare da Lumivie. <b>Ativar subdomínios</b> deixa criar sites em nome.dominio.com.br, sem mexer nos subdomínios que já existem. <b>Ativar domínio/slug</b> deixa criar sites em dominio.com.br/nome e só aparece quando o domínio não tem site próprio.</p>
+    <div class="tabela" id="lista-dominios"></div>
   </div>
 </section>
 
-<div id="solto" hidden>Solte o ficheiro .html</div>
+<!-- Editor de texto -->
+<section id="editor" hidden>
+  <div class="barra">
+    <span class="caminho" id="editor-caminho"></span>
+    <button id="editor-previa">Pré-visualizar</button>
+    <button id="editor-fechar">Fechar</button>
+    <button class="primario" id="editor-salvar">Salvar</button>
+  </div>
+  <textarea id="editor-texto" spellcheck="false"></textarea>
+</section>
+
+<dialog id="dlg">
+  <form method="dialog" id="dlg-form">
+    <h2 id="dlg-titulo"></h2>
+    <p id="dlg-texto"></p>
+    <div id="dlg-campos"></div>
+    <div class="erro" id="dlg-erro" role="alert"></div>
+    <div class="botoes">
+      <button value="cancelar" formnovalidate>Cancelar</button>
+      <button value="ok" class="primario" id="dlg-ok">Confirmar</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="solto" hidden>Solte para enviar à pasta aberta</div>
 <div id="toast" role="status" hidden></div>
 
 <script>
 const $ = (id) => document.getElementById(id);
-let paginas = [];
-let dominios = [];
-let atual = null;       // id ("domínio/slug") da página aberta; null = página nova
-let sujo = false;
+const FUSO = "America/Sao_Paulo";
+const TEXTO = /\.(html?|css|m?js|json|txt|xml|svg|md|map|webmanifest|csv)$/i;
+
+let eu = null;          // { usuario, papel, dns }
+let sites = [];
+let enderecos = [];     // [{ modo, dominio }]
+let atual = null;       // id do site aberto
+let pasta = "";         // pasta aberta dentro do site
+let editando = null;    // caminho do arquivo no editor
+let sujo = false;       // editor com alterações não salvas
+let itensPasta = [];    // itens da pasta aberta, na ordem da lista
+let selecao = new Set(); // caminhos marcados na pasta aberta
+let ultimoMarcado = -1; // índice do último clique, para o Shift
+let area = null;        // { op, origem, itens, rotulo } do copiar/recortar
+
+/* ------------------------------------------------------------------ comum */
 
 async function api(caminho, opcoes = {}) {
   const r = await fetch("api/" + caminho, {
     ...opcoes,
-    headers: { "Content-Type": "application/json", "X-Painel": "1" },
+    headers: { "Content-Type": "application/json", "X-Painel": "1", ...(opcoes.headers || {}) },
     credentials: "same-origin",
   });
-  const dados = await r.json().catch(() => ({}));
-  if (r.status === 401 && caminho !== "entrar") { mostrarEntrar(); throw new Error(dados.erro); }
-  if (!r.ok) throw new Error(dados.erro || "Erro " + r.status);
-  return dados;
+  const bruto = opcoes.bruto;
+  const dados = bruto && r.ok ? null : await r.json().catch(() => ({}));
+  if (r.status === 401 && caminho !== "entrar") { mostrarEntrar(); throw new Error(dados?.erro || "Sessão expirada."); }
+  if (!r.ok) throw Object.assign(new Error(dados?.erro || "Erro " + r.status), { status: r.status, dados });
+  return bruto ? r : dados;
 }
 
 let tempoToast;
@@ -182,11 +377,92 @@ function toast(texto) {
   $("toast").textContent = texto;
   $("toast").hidden = false;
   clearTimeout(tempoToast);
-  tempoToast = setTimeout(() => ($("toast").hidden = true), 3200);
+  tempoToast = setTimeout(() => ($("toast").hidden = true), 3600);
 }
+
+const dataCurta = (iso) => iso ? new Date(iso).toLocaleString("pt-BR", { timeZone: FUSO, dateStyle: "short", timeStyle: "short" }) : "";
+const dataHora = (iso) => iso ? new Date(iso).toLocaleString("pt-BR", { timeZone: FUSO, dateStyle: "short", timeStyle: "medium" }) : "";
+const tamanho = (n) => n == null ? "" : n < 1024 ? n + " B" : n < 1048576 ? (n / 1024).toFixed(1) + " KB" : (n / 1048576).toFixed(1) + " MB";
+const juntar = (...p) => p.filter(Boolean).join("/");
+const q = (s) => encodeURIComponent(s);
+
+function descartar() {
+  return !sujo || confirm("Há alterações não salvas no editor. Descartar?");
+}
+
+// Caixa de diálogo única para tudo o que pede texto, senha ou confirmação.
+// Devolve os valores, ou null se a pessoa cancelou. `acao` pode lançar erro:
+// a caixa fica aberta mostrando a mensagem.
+function pedir({ titulo, texto = "", campos = [], botao = "Confirmar", acao }) {
+  return new Promise((resolve) => {
+    const dlg = $("dlg");
+    $("dlg-titulo").textContent = titulo;
+    $("dlg-texto").textContent = texto;
+    $("dlg-erro").textContent = "";
+    $("dlg-ok").textContent = botao;
+    const box = $("dlg-campos");
+    box.innerHTML = "";
+    for (const c of campos) {
+      const l = document.createElement("label");
+      l.className = "campo";
+      l.textContent = c.rotulo;
+      l.htmlFor = "dlg-" + c.id;
+      if (c.tipo === "select") {
+        const sel = document.createElement("select");
+        sel.id = "dlg-" + c.id;
+        for (const [valor, texto] of c.opcoes) {
+          const o = document.createElement("option");
+          o.value = valor;
+          o.textContent = texto;
+          sel.append(o);
+        }
+        if (c.valor !== undefined) sel.value = c.valor;
+        box.append(l, sel);
+        continue;
+      }
+      const i = document.createElement("input");
+      i.type = c.tipo || "password";
+      i.id = "dlg-" + c.id;
+      i.autocomplete = c.auto || "off";
+      i.required = true;
+      i.spellcheck = false;
+      i.autocapitalize = "off";
+      if (c.valor) i.value = c.valor;
+      box.append(l, i);
+    }
+    $("dlg-form").onsubmit = async (e) => {
+      if (e.submitter && e.submitter.value === "cancelar") return;
+      e.preventDefault();
+      const valores = Object.fromEntries(campos.map((c) => [c.id, $("dlg-" + c.id).value]));
+      try {
+        $("dlg-ok").disabled = true;
+        if (acao) await acao(valores);
+        dlg.close("ok");
+        resolve(valores);
+      } catch (err) {
+        $("dlg-erro").textContent = err.message;
+      } finally {
+        $("dlg-ok").disabled = false;
+      }
+    };
+    dlg.onclose = () => { if (dlg.returnValue !== "ok") resolve(null); };
+    dlg.returnValue = "";
+    dlg.showModal();
+    const primeiro = box.querySelector("input, select");
+    if (primeiro) { primeiro.focus(); if (primeiro.select) primeiro.select(); }
+  });
+}
+
+const gerarSenha = () => {
+  const a = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  return Array.from(crypto.getRandomValues(new Uint8Array(14)), (x) => a[x % a.length]).join("");
+};
+
+/* ------------------------------------------------------------ entrar/sair */
 
 function mostrarEntrar() {
   $("app").hidden = true;
+  $("editor").hidden = true;
   $("entrar").hidden = false;
   $("usuario").focus();
 }
@@ -211,218 +487,918 @@ $("sair").onclick = async () => {
 };
 
 async function abrirPainel() {
-  await carregarLista();
+  eu = await api("eu");
+  $("quem").textContent = eu.usuario + (eu.papel === "admin" ? " · admin" : "");
+  for (const b of document.querySelectorAll("[data-admin]")) {
+    b.hidden = eu.papel !== "admin" || (b.hasAttribute("data-dns") && !eu.dns);
+  }
+  trocarTela("sites");
+  await carregarSites();
   $("entrar").hidden = true;
   $("app").hidden = false;
 }
 
-const dataCurta = (iso) => new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+function trocarTela(nome) {
+  for (const t of document.querySelectorAll(".tela")) t.hidden = t.id !== "tela-" + nome;
+  for (const b of document.querySelectorAll(".aba")) b.classList.toggle("ativa", b.dataset.tela === nome);
+  if (nome === "usuarios") carregarUsuarios();
+  if (nome === "historico") carregarHistorico();
+  if (nome === "dominios") carregarDominios();
+}
+for (const b of document.querySelectorAll(".aba")) b.onclick = () => trocarTela(b.dataset.tela);
 
-async function carregarLista() {
-  const r = await api("paginas");
-  paginas = r.paginas;
-  if (!dominios.length) {
-    dominios = r.dominios;
-    for (const d of dominios) {
-      const o = document.createElement("option");
-      o.value = d.dominio;
-      o.textContent = d.tipo === "sub" ? "Subdomínio ." + d.dominio : d.dominio + "/";
-      $("dominio").append(o);
-    }
+$("minha-senha").onclick = () => pedir({
+  titulo: "Minha senha",
+  campos: [
+    { id: "atual", rotulo: "Senha atual", auto: "current-password" },
+    { id: "nova", rotulo: "Senha nova (mínimo 8)", auto: "new-password" },
+  ],
+  botao: "Trocar senha",
+  acao: (v) => api("minha-senha", { method: "POST", body: JSON.stringify(v) }),
+}).then((v) => v && toast("Senha trocada."));
+
+/* ------------------------------------------------------------- endereços */
+
+const valorEndereco = (e) => e.modo + ":" + e.dominio;
+function montarOpcoes(sel) {
+  const antes = sel.value;
+  sel.innerHTML = "";
+  for (const e of enderecos) {
+    const o = document.createElement("option");
+    o.value = valorEndereco(e);
+    o.textContent = e.modo === "sub" ? "Subdomínio ." + e.dominio : e.dominio + "/";
+    sel.append(o);
   }
+  if (antes && enderecos.some((e) => valorEndereco(e) === antes)) sel.value = antes;
+}
+// Caminho mostra "dominio/" antes do nome; subdomínio mostra ".dominio"
+// depois. A pessoa vê o endereço final enquanto escreve.
+function moldura(sel, rotulo) {
+  const [modo, dominio] = sel.value.split(/:(.*)/);
+  const [antes, , depois] = rotulo.children;
+  antes.textContent = modo === "sub" ? "" : dominio + "/";
+  depois.textContent = modo === "sub" ? "." + dominio : "";
+  rotulo.classList.toggle("sub", modo === "sub");
+}
+const limparSlug = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9-]+/g, "-");
+for (const id of ["slug", "novo-slug"]) {
+  $(id).addEventListener("input", () => {
+    const limpo = limparSlug($(id).value);
+    if (limpo !== $(id).value) $(id).value = limpo;
+    if (id === "slug") marcarEndereco();
+  });
+}
+
+/* ------------------------------------------------------------------ sites */
+
+async function carregarSites() {
+  const r = await api("sites");
+  sites = r.sites;
+  enderecos = r.enderecos;
+  montarOpcoes($("onde"));
+  montarOpcoes($("novo-onde"));
   const lista = $("lista");
   lista.innerHTML = "";
-  if (!paginas.length) lista.innerHTML = '<div class="vazio">Nenhuma página ainda.</div>';
-  for (const p of paginas) {
+  if (!sites.length) lista.innerHTML = '<div class="vazio">Nenhum site ainda.</div>';
+  for (const s of sites) {
     const el = document.createElement("div");
-    el.className = "item" + (p.id === atual ? " atual" : "");
-    el.dataset.id = p.id;
-    el.innerHTML = `<div class="nome"><b></b><small></small></div>
-      <label class="chave" title="Ligar ou desligar"><input type="checkbox" aria-label="Página no ar"><span></span></label>`;
-    el.querySelector("b").textContent = p.endereco;
-    el.querySelector("small").textContent = (p.ativo ? "No ar" : "Desligada") + " · " + dataCurta(p.atualizado);
+    el.className = "item" + (s.id === atual ? " atual" : "");
+    el.dataset.id = s.id;
+    el.innerHTML = `<div class="nome"><b></b><small class="l1"></small><small class="l2"></small></div>
+      <label class="chave" title="Ligar ou desligar"><input type="checkbox" aria-label="Site no ar"><span></span></label>`;
+    el.querySelector("b").textContent = s.endereco;
+    el.querySelector(".l1").textContent = (s.ativo ? "No ar" : "Desligado") + " · " + s.arquivos + " arquivos · " + tamanho(s.bytes);
+    el.querySelector(".l2").textContent = dataCurta(s.atualizado) + (s.atualizadoPor ? " · " + s.atualizadoPor : "");
     const chave = el.querySelector("input");
-    chave.checked = p.ativo;
+    chave.checked = s.ativo;
     chave.onclick = (e) => e.stopPropagation();
-    chave.onchange = () => alternar(p, chave.checked);
-    el.onclick = () => abrir(p.id);
+    chave.onchange = () => ligar(s.id, chave.checked);
+    el.onclick = () => abrirSite(s.id);
     lista.append(el);
   }
-}
-
-async function alternar(p, ativo) {
-  try {
-    await api("paginas/" + encodeURIComponent(p.id), { method: "PATCH", body: JSON.stringify({ ativo }) });
-    toast(ativo ? `${p.endereco} está no ar` : `${p.endereco} foi desligada`);
-    if (p.id === atual) $("ativa").checked = ativo;
-  } catch (err) { toast(err.message); }
-  await carregarLista();
-  if (p.id === atual) rotuloAtiva();
-}
-
-function descartar() {
-  return !sujo || confirm("Há alterações não salvas. Descartar?");
-}
-
-function preencher(dominio, slug, ativo, html) {
-  $("sem-pagina").hidden = true;
-  $("form-pagina").hidden = false;
-  $("dominio").value = dominio;
-  moldura();
-  $("slug").value = slug;
-  $("ativa").checked = ativo;
-  $("html").value = html;
-  rotuloAtiva();
-  atualizarPrevia();
-  sujo = false;
-  for (const el of document.querySelectorAll(".item")) el.classList.toggle("atual", el.dataset.id === atual);
-}
-
-async function abrir(id) {
-  if (id === atual || !descartar()) return;
-  try {
-    const p = await api("paginas/" + encodeURIComponent(id));
-    atual = id;
-    preencher(p.dominio, p.slug, p.ativo, p.html);
-  } catch (err) { toast(err.message); }
-}
-
-function nova(slug = "", html = "") {
-  if (!descartar()) return;
-  atual = null;
-  preencher($("dominio").value || dominios[0].dominio, slug, true, html);
-  sujo = !!html;
-  (slug ? $("html") : $("slug")).focus();
-}
-$("nova").onclick = () => nova();
-
-// Página por caminho mostra "lumivie.com.br/" antes do nome; subdomínio mostra
-// ".velacademy.com.br" depois. A pessoa vê o endereço final enquanto escreve.
-function moldura() {
-  const d = dominios.find((x) => x.dominio === $("dominio").value) || dominios[0];
-  $("antes").textContent = d.tipo === "sub" ? "" : d.dominio + "/";
-  $("depois").textContent = d.tipo === "sub" ? "." + d.dominio : "";
-  $("antes").parentElement.classList.toggle("sub", d.tipo === "sub");
-}
-$("dominio").onchange = () => { moldura(); sujo = true; };
-
-function rotuloAtiva() {
-  $("rotulo-ativa").textContent = $("ativa").checked ? "No ar" : "Desligada";
-  const p = atual && paginas.find((x) => x.id === atual);
-  $("aviso").innerHTML = "";
-  if (p && p.ativo) {
-    const a = document.createElement("a");
-    a.href = "https://" + p.endereco;
-    a.target = "_blank";
-    a.rel = "noopener";
-    a.textContent = p.endereco;
-    $("aviso").append("No ar em ", a);
-  } else if (p) {
-    $("aviso").textContent = p.dominio === dominios[0].dominio
-      ? "Desligada: quem abrir o endereço vê o site da Lumivie."
-      : "Desligada: o endereço responde que a página não existe.";
-  } else {
-    $("aviso").textContent = "Página nova, ainda não salva.";
+  if (atual) {
+    const s = sites.find((x) => x.id === atual);
+    if (s) mostrarCabecalho(s); else fecharSite();
   }
 }
-$("ativa").onchange = () => { sujo = true; rotuloAtiva(); };
 
-// O endereço aceita só o que o servidor aceita, então a pessoa vê o slug final
-// enquanto digita em vez de descobrir depois de salvar.
-const paraSlug = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
-  .replace(/\.html?$/, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
-$("slug").oninput = () => {
-  const limpo = $("slug").value.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9-]+/g, "-");
-  if (limpo !== $("slug").value) $("slug").value = limpo;
-  sujo = true;
+async function ligar(id, ativo) {
+  try {
+    const s = await api("sites/" + id, { method: "PATCH", body: JSON.stringify({ ativo }) });
+    toast(ativo ? `${s.endereco} está no ar` : `${s.endereco} foi desligado`);
+  } catch (err) { toast(err.message); }
+  await carregarSites();
+}
+
+function fecharSite() {
+  atual = null;
+  $("site").hidden = true;
+  $("form-novo").hidden = true;
+  $("sem-site").hidden = false;
+}
+
+async function abrirSite(id, subpasta = "") {
+  atual = id;
+  pasta = subpasta;
+  selecao.clear();
+  ultimoMarcado = -1;
+  $("sem-site").hidden = true;
+  $("form-novo").hidden = true;
+  $("site").hidden = false;
+  for (const el of document.querySelectorAll(".item")) el.classList.toggle("atual", el.dataset.id === id);
+  const s = sites.find((x) => x.id === id);
+  if (s) mostrarCabecalho(s);
+  await carregarPasta();
+}
+
+function mostrarCabecalho(s) {
+  $("onde").value = s.modo + ":" + s.dominio;
+  moldura($("onde"), $("endereco"));
+  $("slug").value = s.slug;
+  $("ativo").checked = s.ativo;
+  $("rotulo-ativo").textContent = s.ativo ? "No ar" : "Desligado";
+  $("salvar-endereco").hidden = true;
+  $("sem-index").hidden = s.temIndex;
+  const aviso = $("aviso");
+  aviso.innerHTML = "";
+  if (s.ativo) {
+    const a = document.createElement("a");
+    a.href = s.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = s.endereco;
+    aviso.append("No ar em ", a);
+  } else {
+    aviso.textContent = "Desligado. Use Pré-visualizar para ver antes de colocar no ar.";
+  }
+  aviso.append(` · ${s.arquivos} arquivos · ${tamanho(s.bytes)}`);
+}
+
+function marcarEndereco() {
+  const s = sites.find((x) => x.id === atual);
+  if (!s) return;
+  const mudou = $("onde").value !== s.modo + ":" + s.dominio || $("slug").value !== s.slug;
+  $("salvar-endereco").hidden = !mudou;
+}
+$("onde").onchange = () => { moldura($("onde"), $("endereco")); marcarEndereco(); };
+$("salvar-endereco").onclick = async () => {
+  const [modo, dominio] = $("onde").value.split(/:(.*)/);
+  const slug = $("slug").value.replace(/^-+|-+$/g, "");
+  if (!slug) return toast("Preencha o endereço.");
+  if (modo === "sub") toast("Conferindo se o subdomínio está livre...");
+  try {
+    const s = await api("sites/" + atual, { method: "PATCH", body: JSON.stringify({ modo, dominio, slug }) });
+    toast("Endereço mudado para " + s.endereco);
+    await carregarSites();
+  } catch (err) { toast(err.message); }
 };
-$("html").oninput = () => { sujo = true; agendarPrevia(); };
+$("ativo").onchange = () => ligar(atual, $("ativo").checked);
 
-let comPrevia = false;
-let tempoPrevia;
-function atualizarPrevia() { if (comPrevia) $("quadro").srcdoc = $("html").value; }
-function agendarPrevia() { clearTimeout(tempoPrevia); tempoPrevia = setTimeout(atualizarPrevia, 500); }
-$("previa").onclick = () => {
-  comPrevia = !comPrevia;
-  $("quadro").hidden = !comPrevia;
-  $("editor").classList.toggle("com-previa", comPrevia);
-  $("previa").textContent = comPrevia ? "Fechar pré-visualização" : "Pré-visualizar";
-  atualizarPrevia();
+$("previa").onclick = async () => {
+  // A aba abre já, antes do await, para o navegador não a tratar como popup.
+  const aba = window.open("about:blank", "_blank");
+  try {
+    const { url } = await api("sites/" + atual + "/previa");
+    aba.location = url;
+  } catch (err) { aba.close(); toast(err.message); }
 };
 
-function lerFicheiro(f) {
-  if (!f) return;
-  if (!/\.html?$/i.test(f.name) && f.type !== "text/html") return toast("Envie um ficheiro .html");
-  const leitor = new FileReader();
-  leitor.onload = () => {
-    // Com uma página aberta, o ficheiro substitui o HTML dela. Sem nenhuma,
-    // vira página nova com o nome do ficheiro como endereço.
-    if ($("form-pagina").hidden) nova(paraSlug(f.name), leitor.result);
-    else {
-      $("html").value = leitor.result;
-      if (!atual && !$("slug").value) $("slug").value = paraSlug(f.name);
-      sujo = true;
-      atualizarPrevia();
-      toast("HTML carregado. Clique em Salvar para publicar.");
+$("apagar-site").onclick = async () => {
+  const s = sites.find((x) => x.id === atual);
+  const v = await pedir({
+    titulo: "Apagar " + s.endereco,
+    texto: `Apaga o site e os ${s.arquivos} arquivos dele. Não dá para desfazer. Para confirmar, escreva o endereço abaixo.`,
+    campos: [{ id: "conf", rotulo: s.endereco, tipo: "text" }],
+    botao: "Apagar site",
+    acao: async (v) => {
+      if (v.conf.trim() !== s.endereco) throw new Error("O endereço não confere.");
+      await api("sites/" + atual, { method: "DELETE" });
+    },
+  });
+  if (!v) return;
+  toast(s.endereco + " foi apagado.");
+  fecharSite();
+  carregarSites();
+};
+
+/* ---- novo site ---- */
+
+$("novo-site").onclick = () => {
+  atual = null;
+  for (const el of document.querySelectorAll(".item")) el.classList.remove("atual");
+  $("site").hidden = true;
+  $("sem-site").hidden = true;
+  $("form-novo").hidden = false;
+  $("novo-slug").value = "";
+  moldura($("novo-onde"), $("novo-endereco"));
+  $("novo-slug").focus();
+};
+$("novo-onde").onchange = () => moldura($("novo-onde"), $("novo-endereco"));
+$("novo-cancelar").onclick = fecharSite;
+$("form-novo").onsubmit = async (e) => {
+  e.preventDefault();
+  const [modo, dominio] = $("novo-onde").value.split(/:(.*)/);
+  const slug = $("novo-slug").value.replace(/^-+|-+$/g, "");
+  if (!slug) return toast("Preencha o endereço.");
+  $("novo-criar").disabled = true;
+  if (modo === "sub") toast("Conferindo se o subdomínio está livre...");
+  try {
+    const s = await api("sites", { method: "POST", body: JSON.stringify({ modo, dominio, slug, ativo: $("novo-ativo").checked }) });
+    toast(`Site ${s.endereco} criado. Agora envie os arquivos.`);
+    await carregarSites();
+    await abrirSite(s.id);
+  } catch (err) { toast(err.message); }
+  finally { $("novo-criar").disabled = false; }
+};
+
+/* ---------------------------------------------------------------- arquivos */
+
+function montarTrilha() {
+  const t = $("trilha");
+  t.innerHTML = "";
+  const partes = pasta ? pasta.split("/") : [];
+  const raiz = document.createElement("button");
+  raiz.textContent = "Pasta principal";
+  raiz.onclick = () => abrirPasta("");
+  aceitarSolto(raiz, "");
+  t.append(raiz);
+  partes.forEach((p, i) => {
+    t.append(" / ");
+    const b = document.createElement("button");
+    b.textContent = p;
+    const destino = partes.slice(0, i + 1).join("/");
+    b.onclick = () => abrirPasta(destino);
+    if (i < partes.length - 1) aceitarSolto(b, destino);
+    t.append(b);
+  });
+}
+
+async function carregarPasta() {
+  montarTrilha();
+  mostrarArea();
+  let r;
+  try { r = await api(`sites/${atual}/lista?caminho=${q(pasta)}`); }
+  catch (err) { toast(err.message); pasta = ""; return; }
+  itensPasta = r.itens.map((it) => ({ ...it, caminho: juntar(pasta, it.nome) }));
+  // A seleção sobrevive a recarregar a mesma pasta (depois de enviar, por
+  // exemplo), mas só com o que ainda existe.
+  selecao = new Set([...selecao].filter((c) => itensPasta.some((i) => i.caminho === c)));
+  const t = $("arquivos");
+  t.innerHTML = '<thead><tr><th class="marca"><input type="checkbox" id="sel-todos" aria-label="Marcar todos"></th><th>Nome</th><th>Tamanho</th><th class="col-data">Modificado</th><th></th></tr></thead><tbody></tbody>';
+  $("sel-todos").onchange = () => { marcarTodos($("sel-todos").checked); };
+  const corpo = t.tBodies[0];
+  if (pasta) {
+    const tr = corpo.insertRow();
+    tr.insertCell().className = "marca";
+    const b = document.createElement("button");
+    b.className = "link";
+    b.innerHTML = '<span class="icone">↩</span>voltar';
+    const pai = pasta.split("/").slice(0, -1).join("/");
+    b.onclick = () => abrirPasta(pai);
+    tr.insertCell().append(b);
+    tr.insertCell(); tr.insertCell().className = "col-data"; tr.insertCell();
+    aceitarSolto(tr, pai);
+  }
+  if (!r.itens.length) {
+    const tr = corpo.insertRow();
+    const td = tr.insertCell();
+    td.colSpan = 5;
+    td.className = "suave";
+    td.textContent = "Pasta vazia. Envie arquivos, uma pasta ou um .zip.";
+  }
+  itensPasta.forEach((it, indice) => {
+    const caminho = it.caminho;
+    const tr = corpo.insertRow();
+    tr.dataset.caminho = caminho;
+    const marca = document.createElement("input");
+    marca.type = "checkbox";
+    marca.setAttribute("aria-label", "Marcar " + it.nome);
+    marca.onclick = (e) => marcar(indice, marca.checked, e.shiftKey);
+    tr.insertCell().className = "marca";
+    tr.cells[0].append(marca);
+    // Ctrl/Cmd+clique na linha também marca, como num gerenciador de arquivos.
+    tr.onclick = (e) => {
+      if (!(e.ctrlKey || e.metaKey || e.shiftKey) || e.target.closest("button, input")) return;
+      marcar(indice, !selecao.has(caminho), e.shiftKey);
+    };
+    tr.draggable = true;
+    tr.ondragstart = (e) => {
+      if (!selecao.has(caminho)) { selecao = new Set([caminho]); mostrarSelecao(); }
+      e.dataTransfer.setData("application/x-painel", JSON.stringify([...selecao]));
+      e.dataTransfer.effectAllowed = "move";
+    };
+    if (it.tipo === "pasta") aceitarSolto(tr, caminho);
+    const nome = document.createElement("button");
+    nome.className = "link";
+    nome.innerHTML = `<span class="icone">${it.tipo === "pasta" ? "📁" : TEXTO.test(it.nome) ? "📝" : /\.(png|jpe?g|gif|webp|avif|svg|ico)$/i.test(it.nome) ? "🖼" : "📄"}</span>`;
+    nome.append(it.nome);
+    nome.onclick = () => {
+      if (it.tipo === "pasta") abrirPasta(caminho);
+      else if (TEXTO.test(it.nome)) abrirEditor(caminho);
+      else verArquivo(caminho);
+    };
+    tr.insertCell().append(nome);
+    const c2 = tr.insertCell(); c2.textContent = tamanho(it.bytes); c2.className = "nowrap";
+    const c3 = tr.insertCell(); c3.textContent = dataCurta(it.modificado); c3.className = "nowrap col-data";
+    const acoes = tr.insertCell();
+    acoes.className = "acoes";
+    if (it.tipo === "arquivo") {
+      const ver = document.createElement("button");
+      ver.textContent = "Ver";
+      ver.onclick = () => verArquivo(caminho);
+      acoes.append(ver, " ");
+    }
+    const ren = document.createElement("button");
+    ren.textContent = "Renomear";
+    ren.onclick = () => renomear(caminho, it.nome);
+    const apagar = document.createElement("button");
+    apagar.className = "perigo";
+    apagar.textContent = "Apagar";
+    apagar.onclick = () => apagarItem(caminho, it);
+    acoes.append(ren, " ", apagar);
+  });
+  mostrarSelecao();
+  mostrarArea();
+}
+
+function abrirPasta(destino) {
+  if (destino !== pasta) { selecao.clear(); ultimoMarcado = -1; }
+  pasta = destino;
+  carregarPasta();
+}
+
+/* ---- seleção ---- */
+
+function marcar(indice, valor, intervalo) {
+  const alvo = intervalo && ultimoMarcado >= 0
+    ? itensPasta.slice(Math.min(indice, ultimoMarcado), Math.max(indice, ultimoMarcado) + 1)
+    : [itensPasta[indice]];
+  for (const it of alvo) valor ? selecao.add(it.caminho) : selecao.delete(it.caminho);
+  ultimoMarcado = indice;
+  mostrarSelecao();
+}
+function marcarTodos(valor) {
+  selecao = valor ? new Set(itensPasta.map((i) => i.caminho)) : new Set();
+  mostrarSelecao();
+}
+function mostrarSelecao() {
+  for (const tr of document.querySelectorAll("#arquivos tbody tr[data-caminho]")) {
+    const sim = selecao.has(tr.dataset.caminho);
+    tr.classList.toggle("marcado", sim);
+    tr.cells[0].querySelector("input").checked = sim;
+  }
+  const n = selecao.size;
+  $("barra-selecao").hidden = !n;
+  $("sel-quantos").textContent = n === 1 ? "1 selecionado" : n + " selecionados";
+  const todos = $("sel-todos");
+  if (todos) {
+    todos.checked = n > 0 && n === itensPasta.length;
+    todos.indeterminate = n > 0 && n < itensPasta.length;
+  }
+}
+
+/* ---- copiar, recortar, colar, mover ---- */
+
+const siteAtual = () => sites.find((x) => x.id === atual);
+const rotuloPasta = (p) => p ? p : "pasta principal";
+
+function guardar(op) {
+  if (!selecao.size) return;
+  const s = siteAtual();
+  area = { op, origem: atual, itens: [...selecao], rotulo: s.endereco + (pasta ? "/" + pasta : "") };
+  selecao.clear();
+  mostrarSelecao();
+  mostrarArea();
+  toast(`${area.itens.length} ${area.itens.length === 1 ? "item" : "itens"} ${op === "copiar" ? "copiado(s)" : "recortado(s)"}. Abra a pasta de destino e clique em Colar aqui.`);
+}
+function mostrarArea() {
+  $("barra-colar").hidden = !area;
+  for (const tr of document.querySelectorAll("#arquivos tbody tr[data-caminho]")) {
+    tr.classList.toggle("recortado", !!area && area.op === "mover" && area.origem === atual && area.itens.includes(tr.dataset.caminho));
+  }
+  if (!area) return;
+  const n = area.itens.length;
+  $("colar-texto").textContent = `${n} ${n === 1 ? "item" : "itens"} ${area.op === "copiar" ? "copiado(s)" : "recortado(s)"} de ${area.rotulo}. Colar em: ${rotuloPasta(pasta)}.`;
+}
+
+// Faz a operação no servidor. Se já houver itens com o mesmo nome no
+// destino, pergunta se substitui ou mantém os dois (o novo ganha " (2)").
+async function colar({ op, origem, itens, destino }) {
+  const pedido = (conflito) => api(`sites/${atual}/colar`, { method: "POST", body: JSON.stringify({ op, origem, itens, destino, conflito }) });
+  let r;
+  try {
+    r = await pedido("erro");
+  } catch (err) {
+    if (err.status !== 409) throw err;
+    const v = await pedir({
+      titulo: "Nomes repetidos",
+      texto: err.message,
+      campos: [{ id: "conflito", rotulo: "O que fazer", tipo: "select", opcoes: [["renomear", "Manter os dois (o novo ganha \" (2)\")"], ["substituir", "Substituir os que já existem"]], valor: "renomear" }],
+      botao: op === "copiar" ? "Copiar" : "Mover",
+    });
+    if (!v) return null;
+    r = await pedido(v.conflito);
+  }
+  return r;
+}
+
+async function colarAqui() {
+  if (!area) return;
+  const pedido = area;
+  try {
+    const r = await colar({ ...pedido, destino: pasta });
+    if (!r) return;
+    toast(`${r.feitos} ${r.feitos === 1 ? "item" : "itens"} ${pedido.op === "copiar" ? "copiado(s)" : "movido(s)"} para ${rotuloPasta(pasta)}.`);
+    // Recortar cola uma vez; copiar pode colar em vários lugares.
+    if (pedido.op === "mover") area = null;
+  } catch (err) { toast(err.message); }
+  await carregarPasta();
+  carregarSites();
+}
+
+async function paraPasta(op) {
+  if (!selecao.size) return;
+  let pastas;
+  try { pastas = (await api(`sites/${atual}/pastas`)).pastas; } catch (err) { return toast(err.message); }
+  // Não se oferece mover uma pasta para dentro dela mesma.
+  const itens = [...selecao];
+  const opcoes = pastas
+    .filter((p) => op === "copiar" || !itens.some((i) => p === i || p.startsWith(i + "/")))
+    .map((p) => [p, p ? p : "Pasta principal"]);
+  const v = await pedir({
+    titulo: (op === "copiar" ? "Copiar " : "Mover ") + (itens.length === 1 ? itens[0].split("/").pop() : itens.length + " itens"),
+    campos: [{ id: "destino", rotulo: "Para a pasta", tipo: "select", opcoes, valor: pasta.split("/").slice(0, -1).join("/") }],
+    botao: op === "copiar" ? "Copiar" : "Mover",
+  });
+  if (!v) return;
+  try {
+    const r = await colar({ op, origem: atual, itens, destino: v.destino });
+    if (!r) return;
+    selecao.clear();
+    toast(`${r.feitos} ${r.feitos === 1 ? "item" : "itens"} ${op === "copiar" ? "copiado(s)" : "movido(s)"} para ${rotuloPasta(v.destino)}.`);
+  } catch (err) { toast(err.message); }
+  await carregarPasta();
+  carregarSites();
+}
+
+async function apagarSelecao() {
+  const itens = [...selecao];
+  if (!itens.length) return;
+  const pastas = itensPasta.filter((i) => selecao.has(i.caminho) && i.tipo === "pasta").length;
+  const aviso = pastas ? ` (${pastas} ${pastas === 1 ? "é pasta" : "são pastas"}, com tudo o que está dentro)` : "";
+  if (!confirm(`Apagar ${itens.length} ${itens.length === 1 ? "item" : "itens"}${aviso}? Não dá para desfazer.`)) return;
+  try {
+    await api(`sites/${atual}/apagar`, { method: "POST", body: JSON.stringify({ itens }) });
+    toast(`${itens.length} ${itens.length === 1 ? "item apagado" : "itens apagados"}.`);
+    if (area && area.origem === atual) area.itens = area.itens.filter((i) => !itens.includes(i));
+    if (area && !area.itens.length) area = null;
+    selecao.clear();
+  } catch (err) { toast(err.message); }
+  await carregarPasta();
+  carregarSites();
+}
+
+// Arrastar itens da lista para uma pasta (linha da lista ou trilha) move.
+function aceitarSolto(el, destino) {
+  const interno = (e) => e.dataTransfer.types.includes("application/x-painel");
+  el.addEventListener("dragover", (e) => { if (!interno(e)) return; e.preventDefault(); e.dataTransfer.dropEffect = "move"; el.classList.add("alvo"); });
+  el.addEventListener("dragleave", () => el.classList.remove("alvo"));
+  el.addEventListener("drop", async (e) => {
+    if (!interno(e)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    el.classList.remove("alvo");
+    const itens = JSON.parse(e.dataTransfer.getData("application/x-painel")).filter((i) => i !== destino);
+    if (!itens.length) return;
+    try {
+      const r = await colar({ op: "mover", origem: atual, itens, destino });
+      if (r) { selecao.clear(); toast(`${r.feitos} ${r.feitos === 1 ? "item movido" : "itens movidos"} para ${rotuloPasta(destino)}.`); }
+    } catch (err) { toast(err.message); }
+    await carregarPasta();
+    carregarSites();
+  });
+}
+
+$("sel-copiar").onclick = () => guardar("copiar");
+$("sel-recortar").onclick = () => guardar("mover");
+$("sel-mover").onclick = () => paraPasta("mover");
+$("sel-copiar-para").onclick = () => paraPasta("copiar");
+$("sel-apagar").onclick = apagarSelecao;
+$("sel-limpar").onclick = () => marcarTodos(false);
+$("colar").onclick = colarAqui;
+$("colar-cancelar").onclick = () => { area = null; mostrarArea(); };
+
+// Atalhos de teclado só na lista de arquivos, e nunca enquanto se escreve.
+addEventListener("keydown", (e) => {
+  if ($("site").hidden || !$("editor").hidden || $("dlg").open || $("tela-sites").hidden) return;
+  if (e.target.closest("input:not([type=checkbox]), textarea, select")) return;
+  const ctrl = e.ctrlKey || e.metaKey;
+  const k = e.key.toLowerCase();
+  if (ctrl && k === "a") { e.preventDefault(); marcarTodos(true); }
+  else if (ctrl && k === "c" && selecao.size) { e.preventDefault(); guardar("copiar"); }
+  else if (ctrl && k === "x" && selecao.size) { e.preventDefault(); guardar("mover"); }
+  else if (ctrl && k === "v" && area) { e.preventDefault(); colarAqui(); }
+  else if ((e.key === "Delete" || e.key === "Backspace") && selecao.size) { e.preventDefault(); apagarSelecao(); }
+  else if (e.key === "Escape") { if (selecao.size) marcarTodos(false); else if (area) { area = null; mostrarArea(); } }
+});
+
+// Com o site no ar, abre o endereço de verdade; desligado, abre pela
+// pré-visualização, que é o único jeito de ver antes de publicar.
+async function verArquivo(caminho) {
+  const s = sites.find((x) => x.id === atual);
+  const cam = caminho.split("/").map(q).join("/");
+  if (s.ativo) return window.open(s.url + cam, "_blank", "noopener");
+  const aba = window.open("about:blank", "_blank");
+  try {
+    const { url } = await api("sites/" + atual + "/previa");
+    aba.location = url + cam;
+  } catch (err) { aba.close(); toast(err.message); }
+}
+
+async function renomear(caminho, nomeAtual) {
+  const v = await pedir({
+    titulo: "Renomear",
+    texto: "Pode incluir pasta para mover (ex.: img/foto.jpg).",
+    campos: [{ id: "nome", rotulo: "Novo nome", tipo: "text", valor: caminho }],
+    botao: "Renomear",
+    acao: (v) => api(`sites/${atual}/mover`, { method: "POST", body: JSON.stringify({ de: caminho, para: v.nome.trim() }) }),
+  });
+  if (v) { toast("Renomeado."); carregarPasta(); carregarSites(); }
+}
+
+async function apagarItem(caminho, it) {
+  const oque = it.tipo === "pasta" ? `a pasta ${it.nome} e tudo dentro dela` : it.nome;
+  if (!confirm(`Apagar ${oque}? Não dá para desfazer.`)) return;
+  try {
+    await api(`sites/${atual}/arquivo?caminho=${q(caminho)}`, { method: "DELETE" });
+    toast(it.nome + " apagado.");
+  } catch (err) { toast(err.message); }
+  carregarPasta();
+  carregarSites();
+}
+
+$("nova-pasta").onclick = async () => {
+  const v = await pedir({
+    titulo: "Nova pasta",
+    campos: [{ id: "nome", rotulo: "Nome da pasta", tipo: "text" }],
+    botao: "Criar pasta",
+    acao: (v) => api(`sites/${atual}/pasta?caminho=${q(juntar(pasta, v.nome.trim()))}`, { method: "POST" }),
+  });
+  if (v) carregarPasta();
+};
+
+$("novo-arquivo").onclick = async () => {
+  const v = await pedir({
+    titulo: "Novo arquivo",
+    texto: "Arquivo de texto: .html, .css, .js, .json, .txt, .svg...",
+    campos: [{ id: "nome", rotulo: "Nome do arquivo", tipo: "text", valor: "pagina.html" }],
+    botao: "Criar",
+    acao: async (v) => {
+      const nome = v.nome.trim();
+      if (!TEXTO.test(nome)) throw new Error("Use uma extensão de texto, como .html, .css ou .js.");
+      const cam = juntar(pasta, nome);
+      const lista = await api(`sites/${atual}/lista?caminho=${q(pasta)}`);
+      if (lista.itens.some((i) => i.nome === nome)) throw new Error("Já existe um arquivo com esse nome.");
+      await api(`sites/${atual}/arquivo?caminho=${q(cam)}`, { method: "PUT", body: "", headers: { "Content-Type": "application/octet-stream" } });
+    },
+  });
+  if (v) { await carregarPasta(); abrirEditor(juntar(pasta, v.nome.trim())); }
+};
+
+/* ---- envio ---- */
+
+// Envia uma lista [{ caminho, arquivo }] para a pasta aberta, quatro de cada
+// vez. Mais de um arquivo vai como lote: uma linha só no histórico no fim.
+async function enviar(lista) {
+  if (!lista.length) return;
+  const grandes = lista.filter((x) => x.arquivo.size > 50 * 1024 * 1024);
+  if (grandes.length) return toast(`${grandes[0].caminho} passa de 50 MB.`);
+  const lote = lista.length > 1;
+  const total = lista.length;
+  const bytes = lista.reduce((a, x) => a + x.arquivo.size, 0);
+  let feitos = 0;
+  const falhas = [];
+  $("envio").hidden = false;
+  const mostrar = () => {
+    $("envio-texto").textContent = `Enviando ${feitos} de ${total}...`;
+    $("envio-barra").style.width = (100 * feitos / total) + "%";
+  };
+  mostrar();
+  const fila = [...lista];
+  const trabalhador = async () => {
+    while (fila.length) {
+      const { caminho, arquivo } = fila.shift();
+      try {
+        await api(`sites/${atual}/arquivo?caminho=${q(juntar(pasta, caminho))}`, {
+          method: "PUT", body: arquivo,
+          headers: { "Content-Type": "application/octet-stream", ...(lote ? { "X-Lote": "1" } : {}) },
+        });
+      } catch (err) { falhas.push(caminho + ": " + err.message); }
+      feitos++;
+      mostrar();
     }
   };
-  leitor.readAsText(f);
+  await Promise.all([trabalhador(), trabalhador(), trabalhador(), trabalhador()]);
+  if (lote && falhas.length < total) {
+    await api(`sites/${atual}/lote`, { method: "POST", body: JSON.stringify({ quantos: total - falhas.length, pasta, bytes }) }).catch(() => {});
+  }
+  $("envio").hidden = true;
+  if (falhas.length) {
+    toast(`${falhas.length} de ${total} falharam. Primeiro erro: ${falhas[0]}`);
+  } else {
+    toast(total === 1 ? `${lista[0].caminho} enviado.` : `${total} arquivos enviados.`);
+  }
+  await carregarPasta();
+  carregarSites();
 }
-$("enviar").onclick = () => $("ficheiro").click();
-$("ficheiro").onchange = () => { lerFicheiro($("ficheiro").files[0]); $("ficheiro").value = ""; };
 
+async function enviarZip(arquivo) {
+  if (arquivo.size > 100 * 1024 * 1024) return toast("O .zip passa de 100 MB.");
+  const onde = pasta ? `na pasta ${pasta}` : "na pasta principal";
+  if (!confirm(`Descompactar ${arquivo.name} ${onde}? Arquivos com o mesmo nome são substituídos.`)) return;
+  $("envio").hidden = false;
+  $("envio-texto").textContent = `Enviando e descompactando ${arquivo.name}...`;
+  $("envio-barra").style.width = "50%";
+  try {
+    const r = await api(`sites/${atual}/zip?caminho=${q(pasta)}`, { method: "POST", body: arquivo, headers: { "Content-Type": "application/zip" } });
+    toast(`${r.arquivos} arquivos descompactados.`);
+  } catch (err) { toast(err.message); }
+  $("envio").hidden = true;
+  await carregarPasta();
+  carregarSites();
+}
+
+$("enviar-arquivos").onclick = () => $("in-arquivos").click();
+$("enviar-pasta").onclick = () => $("in-pasta").click();
+$("enviar-zip").onclick = () => $("in-zip").click();
+$("in-arquivos").onchange = () => {
+  enviar([...$("in-arquivos").files].map((f) => ({ caminho: f.name, arquivo: f })));
+  $("in-arquivos").value = "";
+};
+$("in-pasta").onchange = () => {
+  // O caminho relativo inclui a pasta escolhida: enviar "meusite" cria
+  // meusite/ dentro da pasta aberta, como num gerenciador de arquivos.
+  enviar([...$("in-pasta").files].map((f) => ({ caminho: f.webkitRelativePath || f.name, arquivo: f }))
+    .filter((x) => !/(^|\/)(\.|__MACOSX|Thumbs\.db|desktop\.ini)/i.test(x.caminho)));
+  $("in-pasta").value = "";
+};
+$("in-zip").onchange = () => { if ($("in-zip").files[0]) enviarZip($("in-zip").files[0]); $("in-zip").value = ""; };
+
+// Arrastar: arquivos e pastas soltos vão para a pasta aberta; um único .zip
+// solto pergunta se é para descompactar.
+function lerEntrada(entrada, prefixo = "") {
+  return new Promise((ok) => {
+    if (entrada.isFile) return entrada.file((f) => ok([{ caminho: prefixo + f.name, arquivo: f }]), () => ok([]));
+    const leitor = entrada.createReader();
+    const todas = [];
+    const ler = () => leitor.readEntries(async (lote) => {
+      if (!lote.length) {
+        const filhos = await Promise.all(todas.map((e) => lerEntrada(e, prefixo + entrada.name + "/")));
+        return ok(filhos.flat());
+      }
+      todas.push(...lote);
+      ler();
+    }, () => ok([]));
+    ler();
+  });
+}
 let arrastos = 0;
-addEventListener("dragenter", (e) => { if ($("app").hidden) return; e.preventDefault(); arrastos++; $("solto").hidden = false; });
+const podeSoltar = () => !$("app").hidden && !$("site").hidden && $("editor").hidden && !$("tela-sites").hidden;
+const deFora = (e) => !e.dataTransfer.types.includes("application/x-painel");
+addEventListener("dragenter", (e) => { if (!podeSoltar() || !deFora(e)) return; e.preventDefault(); arrastos++; $("solto").hidden = false; });
 addEventListener("dragleave", () => { if (--arrastos <= 0) { arrastos = 0; $("solto").hidden = true; } });
 addEventListener("dragover", (e) => e.preventDefault());
-addEventListener("drop", (e) => {
+addEventListener("drop", async (e) => {
   e.preventDefault();
   arrastos = 0;
   $("solto").hidden = true;
-  if (!$("app").hidden) lerFicheiro(e.dataTransfer.files[0]);
+  if (!podeSoltar() || !deFora(e)) return;
+  const entradas = [...e.dataTransfer.items].map((i) => i.webkitGetAsEntry && i.webkitGetAsEntry()).filter(Boolean);
+  if (entradas.length === 1 && entradas[0].isFile && /\.zip$/i.test(entradas[0].name)) {
+    return entradas[0].file((f) => enviarZip(f));
+  }
+  const lista = (await Promise.all(entradas.map((en) => lerEntrada(en)))).flat()
+    .filter((x) => !/(^|\/)(\.|__MACOSX|Thumbs\.db|desktop\.ini)/i.test(x.caminho));
+  enviar(lista);
 });
 
-$("form-pagina").onsubmit = async (e) => {
-  e.preventDefault();
-  const slug = $("slug").value.replace(/^-+|-+$/g, "");
-  if (!slug) return toast("Preencha o endereço da página.");
-  $("salvar").disabled = true;
+/* ---- editor ---- */
+
+async function abrirEditor(caminho) {
   try {
-    const dominio = $("dominio").value;
-    const corpo = { html: $("html").value, ativo: $("ativa").checked, dominio, slug };
-    const alvo = atual || dominio + "/" + slug;
-    if (!atual) corpo.criar = true;
-    if (dominio !== dominios[0].dominio) toast("Conferindo se o subdomínio está livre...");
-    const p = await api("paginas/" + encodeURIComponent(alvo), { method: "PUT", body: JSON.stringify(corpo) });
-    atual = p.id;
+    const r = await api(`sites/${atual}/arquivo?caminho=${q(caminho)}`, { bruto: true });
+    const texto = await r.text();
+    editando = caminho;
+    const s = sites.find((x) => x.id === atual);
+    $("editor-caminho").textContent = s.endereco + "/" + caminho;
+    $("editor-texto").value = texto;
+    $("editor-previa").hidden = !/\.html?$/i.test(caminho);
+    $("editor").hidden = false;
     sujo = false;
-    await carregarLista();
-    $("slug").value = p.slug;
-    rotuloAtiva();
-    toast(p.ativo ? `Salvo. No ar em ${p.endereco}` : "Salvo. A página está desligada.");
-  } catch (err) {
-    toast(err.message);
-  } finally {
-    $("salvar").disabled = false;
+    $("editor-texto").focus();
+  } catch (err) { toast(err.message); }
+}
+$("editor-texto").oninput = () => { sujo = true; };
+$("editor-texto").onkeydown = (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { e.preventDefault(); salvarEditor(); }
+  if (e.key === "Tab") {
+    e.preventDefault();
+    const t = e.target;
+    t.setRangeText("  ", t.selectionStart, t.selectionEnd, "end");
+    sujo = true;
   }
 };
-
-$("apagar").onclick = async () => {
-  if (!atual) { sujo = false; $("form-pagina").hidden = true; $("sem-pagina").hidden = false; return; }
-  const pg = paginas.find((x) => x.id === atual);
-  if (!confirm(`Apagar ${pg.endereco}? Não dá para desfazer.`)) return;
+async function salvarEditor() {
   try {
-    await api("paginas/" + encodeURIComponent(atual), { method: "DELETE" });
-    toast(`${pg.endereco} foi apagada`);
-    atual = null;
+    await api(`sites/${atual}/arquivo?caminho=${q(editando)}`, { method: "PUT", body: $("editor-texto").value, headers: { "Content-Type": "application/octet-stream" } });
     sujo = false;
-    $("form-pagina").hidden = true;
-    $("sem-pagina").hidden = false;
-    await carregarLista();
+    toast("Salvo.");
   } catch (err) { toast(err.message); }
+}
+$("editor-salvar").onclick = salvarEditor;
+$("editor-fechar").onclick = () => {
+  if (!descartar()) return;
+  sujo = false;
+  $("editor").hidden = true;
+  carregarPasta();
+  carregarSites();
+};
+$("editor-previa").onclick = async () => {
+  if (sujo) await salvarEditor();
+  verArquivo(editando);
 };
 
 addEventListener("beforeunload", (e) => { if (sujo) e.preventDefault(); });
+
+/* --------------------------------------------------------------- usuários */
+
+$("gerar-senha").onclick = () => { $("nova-senha").value = gerarSenha(); };
+
+$("form-usuario").onsubmit = async (e) => {
+  e.preventDefault();
+  const usuario = $("novo-usuario").value.trim().toLowerCase();
+  const senha = $("nova-senha").value;
+  try {
+    await api("usuarios", { method: "POST", body: JSON.stringify({ usuario, senha, papel: $("novo-papel").value }) });
+    $("novo-usuario").value = "";
+    $("nova-senha").value = "";
+    toast(`Usuário ${usuario} criado. Envie a senha a ele por um canal privado.`);
+    carregarUsuarios();
+  } catch (err) { toast(err.message); }
+};
+
+function celula(tr, conteudo, classe) {
+  const td = tr.insertCell();
+  if (classe) td.className = classe;
+  if (conteudo instanceof Node) td.append(conteudo); else td.textContent = conteudo ?? "";
+  return td;
+}
+
+async function carregarUsuarios() {
+  let lista;
+  try { lista = (await api("usuarios")).usuarios; } catch (err) { return toast(err.message); }
+  const t = $("tabela-usuarios");
+  t.innerHTML = "<thead><tr><th>Usuário</th><th>Papel</th><th>Criado</th><th>Último acesso</th><th></th></tr></thead><tbody></tbody>";
+  const corpo = t.tBodies[0];
+  for (const u of lista) {
+    const tr = corpo.insertRow();
+    celula(tr, u.usuario + (u.usuario === eu.usuario ? " (você)" : ""));
+    const sel = document.createElement("select");
+    sel.setAttribute("aria-label", "Papel de " + u.usuario);
+    sel.innerHTML = '<option value="editor">Editor</option><option value="admin">Administrador</option>';
+    sel.value = u.papel;
+    sel.onchange = async () => {
+      try {
+        await api("usuarios/" + q(u.usuario), { method: "PATCH", body: JSON.stringify({ papel: sel.value }) });
+        toast(`${u.usuario} agora é ${sel.value === "admin" ? "administrador" : "editor"}.`);
+        if (u.usuario === eu.usuario) return abrirPainel();
+      } catch (err) { toast(err.message); }
+      carregarUsuarios();
+    };
+    celula(tr, sel);
+    celula(tr, dataCurta(u.criado) + (u.criadoPor ? " por " + u.criadoPor : ""), "nowrap");
+    celula(tr, dataCurta(u.ultimoAcesso) || "nunca entrou", "nowrap");
+    const acoes = celula(tr, "", "acoes");
+    const bSenha = document.createElement("button");
+    bSenha.textContent = "Definir senha";
+    bSenha.onclick = () => pedir({
+      titulo: "Senha de " + u.usuario,
+      texto: "A senha antiga deixa de valer e " + u.usuario + " sai das sessões abertas.",
+      campos: [{ id: "senha", rotulo: "Senha nova (mínimo 8)", tipo: "text", valor: gerarSenha() }],
+      botao: "Definir senha",
+      acao: (v) => api("usuarios/" + q(u.usuario), { method: "PATCH", body: JSON.stringify({ senha: v.senha }) }),
+    }).then((v) => v && toast("Senha definida. Envie a " + u.usuario + " por um canal privado."));
+    acoes.append(bSenha, " ");
+    if (u.usuario !== eu.usuario) {
+      const bRem = document.createElement("button");
+      bRem.className = "perigo";
+      bRem.textContent = "Remover";
+      bRem.onclick = async () => {
+        if (!confirm(`Remover ${u.usuario}? Ele perde o acesso na hora. Os sites continuam.`)) return;
+        try {
+          await api("usuarios/" + q(u.usuario), { method: "DELETE" });
+          toast(u.usuario + " foi removido.");
+        } catch (err) { toast(err.message); }
+        carregarUsuarios();
+      };
+      acoes.append(bRem);
+    }
+  }
+}
+
+/* -------------------------------------------------------------- histórico */
+
+$("filtro-usuario").onchange = () => carregarHistorico();
+
+async function carregarHistorico() {
+  const filtro = $("filtro-usuario").value;
+  let linhas;
+  try {
+    linhas = (await api("historico?limite=1000" + (filtro ? "&usuario=" + q(filtro) : ""))).linhas;
+  } catch (err) { return toast(err.message); }
+  // O filtro junta os usuários atuais com quem aparece no histórico e já foi
+  // removido.
+  if (!filtro) {
+    const nomes = new Set(linhas.map((l) => l.usuario).filter(Boolean));
+    try { for (const u of (await api("usuarios")).usuarios) nomes.add(u.usuario); } catch {}
+    const sel = $("filtro-usuario");
+    sel.innerHTML = '<option value="">Todos os usuários</option>';
+    for (const n of [...nomes].sort()) {
+      const o = document.createElement("option");
+      o.value = o.textContent = n;
+      sel.append(o);
+    }
+  }
+  const t = $("tabela-historico");
+  t.innerHTML = "<thead><tr><th>Data e hora</th><th>Usuário</th><th>Ação</th><th>Onde</th><th>Detalhe</th></tr></thead><tbody></tbody>";
+  const corpo = t.tBodies[0];
+  if (!linhas.length) celula(corpo.insertRow(), "Nada registrado ainda.").colSpan = 5;
+  for (const l of linhas) {
+    const tr = corpo.insertRow();
+    celula(tr, dataHora(l.quando), "nowrap");
+    celula(tr, l.usuario || "(vazio)");
+    celula(tr, l.acao);
+    celula(tr, l.alvo);
+    celula(tr, l.detalhe);
+  }
+}
+
+/* --------------------------------------------------------------- domínios */
+
+async function carregarDominios() {
+  const box = $("lista-dominios");
+  box.innerHTML = '<div class="vazio">Consultando o Cloudflare...</div>';
+  let zonas;
+  try { zonas = (await api("dominios")).zonas; } catch (err) { box.innerHTML = ""; return toast(err.message); }
+  box.innerHTML = "";
+  if (!zonas.length) box.innerHTML = '<div class="vazio">Nenhum outro domínio na conta.</div>';
+  for (const z of zonas) {
+    const el = document.createElement("div");
+    el.className = "dominio";
+    el.dataset.dominio = z.nome;
+    const nome = document.createElement("b");
+    nome.textContent = z.nome;
+    el.append(nome);
+    const etiqueta = (texto, classe) => {
+      const e = document.createElement("span");
+      e.className = "etiqueta " + (classe || "");
+      e.textContent = texto;
+      el.append(e);
+    };
+    if (z.sub) etiqueta("Subdomínios ativos", "ok");
+    if (z.raiz) etiqueta("domínio/slug ativo", "ok");
+    if (z.problema && !z.sub) etiqueta(z.problema, "aviso");
+    const botao = (texto, raiz, explicacao) => {
+      const b = document.createElement("button");
+      b.className = "primario";
+      b.textContent = texto;
+      b.onclick = () => pedir({
+        titulo: texto + ": " + z.nome,
+        texto: explicacao + " Confirme com a sua senha.",
+        campos: [{ id: "senha", rotulo: "Sua senha", auto: "current-password" }],
+        botao: texto,
+        acao: async (v) => {
+          const r = await api("dominios", { method: "POST", body: JSON.stringify({ dominio: z.nome, senha: v.senha, raiz }) });
+          enderecos = r.enderecos;
+        },
+      }).then((v) => { if (v) { toast(z.nome + ": pronto. Já aparece na escolha de endereço."); carregarDominios(); carregarSites(); } });
+      el.append(b);
+    };
+    if (!z.sub && !z.problema) {
+      botao("Ativar subdomínios", false, `Cria no Cloudflare o registro *.${z.nome} apontando para o servidor dos sites, e o certificado. Os subdomínios que já existem continuam iguais.`);
+    }
+    if (z.sub && !z.raiz && z.raizLivre) {
+      botao("Ativar domínio/slug", true, `Faz ${z.nome} apontar para o servidor dos sites, para criar sites em ${z.nome}/nome. Só é possível porque ${z.nome} não tem site próprio hoje.`);
+    }
+    if (z.sub && !z.raiz && !z.raizLivre) {
+      const p = document.createElement("span");
+      p.className = "pequeno suave";
+      p.textContent = `${z.nome} já tem site próprio: use subdomínio.`;
+      el.append(p);
+    }
+    box.append(el);
+  }
+}
 
 abrirPainel().catch(mostrarEntrar);
 </script>
