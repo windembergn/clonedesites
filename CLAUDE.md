@@ -1,6 +1,6 @@
 # Instruções do repositório
 
-Quatro apps Next.js independentes, cada um na sua pasta. Trabalhe sempre dentro
+Quatro apps Next.js independentes e um painel Node, cada um na sua pasta. Trabalhe sempre dentro
 da pasta do app, nunca na raiz (o nome da raiz tem espaço e quebra o npm).
 
 | Pasta | O que é |
@@ -9,6 +9,7 @@ da pasta do app, nunca na raiz (o nome da raiz tem espaço e quebra o npm).
 | `smart-plastica/` | Link-in-bio da Lumivie São Paulo (a pasta manteve o nome antigo) |
 | `lumivie-pelotas/` | Link-in-bio da Lumivie Pelotas |
 | `dr-christian-mocambique/` | Landing page de captação para pacientes moçambicanos |
+| `painel-paginas/` | Painel (Node, sem dependências) onde a Lumivie sobe HTML que fica em `lumivie.com.br/<slug>` ou `<slug>.velacademy.com.br` |
 
 > ⚠️ **Este repositório é público.** Nunca commitar IP, host, porta, caminho de
 > servidor, chave SSH ou qualquer mapa da infraestrutura. Já houve uma invasão

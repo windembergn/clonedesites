@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Páginas Lumivie</title>
+<link rel="icon" href="/favicon.svg">
+<style>
+  /* As fontes vêm da própria pasta do site: o painel mora no mesmo domínio. */
+  @font-face { font-family: "Apple Garamond"; src: url("/fonts/applegaramond/AppleGaramond.woff2") format("woff2"); font-display: swap; }
+  @font-face { font-family: "Avenir Next"; src: url("/fonts/avenir/AvenirNextLTPro-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "Avenir Next"; src: url("/fonts/avenir/AvenirNextLTPro-Demi.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+
+  :root {
+    --fundo: #e9e4da; --cartao: #f6f3ee; --linha: #dfd9cf; --texto: #1e1e1e; --suave: #6f625b;
+    --marca: #5b2c1e; --marca-texto: #fff; --ok: #2f6b3a; --ok-fundo: #dcebdc; --perigo: #9b2c2c;
+    --codigo: #fffdf9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --fundo: #1a1614; --cartao: #231e1b; --linha: #3a322d; --texto: #eee8e1; --suave: #a79a91;
+      --marca: #bd8d6a; --marca-texto: #1a1614; --ok: #8fcf98; --ok-fundo: #23372a; --perigo: #e28a8a;
+      --codigo: #1d1917;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--fundo); color: var(--texto); font: 15px/1.45 "Avenir Next", system-ui, sans-serif; }
+  h1, h2 { font-family: "Apple Garamond", Georgia, serif; font-weight: 400; margin: 0; }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 1px solid var(--linha); background: var(--cartao); border-radius: 8px; padding: 8px 14px; }
+  button:hover { border-color: var(--suave); }
+  button.primario { background: var(--marca); color: var(--marca-texto); border-color: var(--marca); font-weight: 600; }
+  button.perigo { color: var(--perigo); }
+  button:disabled { opacity: .5; cursor: default; }
+  input[type=text], input[type=password] { width: 100%; padding: 10px 12px; border: 1px solid var(--linha); border-radius: 8px; background: var(--codigo); }
+  label.campo { display: block; font-size: 13px; color: var(--suave); margin: 14px 0 6px; }
+  .erro { color: var(--perigo); font-size: 14px; min-height: 20px; margin-top: 10px; }
+  [hidden] { display: none !important; }
+
+  /* Entrar */
+  #entrar { min-height: 100%; display: grid; place-items: center; padding: 16px; }
+  #entrar form { width: 100%; max-width: 360px; background: var(--cartao); border: 1px solid var(--linha); border-radius: 14px; padding: 28px; }
+  #entrar h1 { font-size: 30px; }
+  #entrar p { color: var(--suave); margin: 4px 0 8px; font-size: 14px; }
+  #entrar button { width: 100%; margin-top: 18px; padding: 11px; }
+
+  /* Painel */
+  #app { display: grid; grid-template-rows: auto 1fr; height: 100%; }
+  header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--linha); background: var(--cartao); }
+  header h1 { font-size: 24px; flex: 1; }
+  .corpo { display: grid; grid-template-columns: 300px 1fr; min-height: 0; }
+  aside { border-right: 1px solid var(--linha); overflow: auto; padding: 8px; }
+  .item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; cursor: pointer; }
+  .item:hover { background: var(--cartao); }
+  .item.atual { background: var(--cartao); outline: 1px solid var(--linha); }
+  .item .nome { flex: 1; min-width: 0; }
+  .item .nome b { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item .nome small { color: var(--suave); font-size: 12px; }
+  .vazio { color: var(--suave); padding: 16px; font-size: 14px; }
+
+  .chave { position: relative; width: 38px; height: 22px; flex: none; }
+  .chave input { opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; position: relative; z-index: 1; }
+  .chave span { position: absolute; inset: 0; border-radius: 99px; background: var(--linha); transition: background .15s; pointer-events: none; }
+  .chave span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 2px #0003; }
+  .chave input:checked + span { background: var(--ok); }
+  .chave input:checked + span::after { transform: translateX(16px); }
+  .chave input:focus-visible + span { outline: 2px solid var(--marca); outline-offset: 2px; }
+
+  main { display: flex; flex-direction: column; min-height: 0; padding: 16px; gap: 12px; }
+  .barra { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .endereco { display: flex; align-items: center; flex: 1 1 320px; border: 1px solid var(--linha); border-radius: 8px; background: var(--codigo); overflow: hidden; }
+  .endereco span { color: var(--suave); white-space: nowrap; }
+  .endereco span:first-of-type:not(:empty) { padding-left: 12px; }
+  .endereco span:last-of-type:not(:empty) { padding-right: 12px; }
+  .endereco input { border: 0; border-radius: 0; padding: 10px 2px; background: transparent; min-width: 0; }
+  .endereco span:first-of-type:empty + input { padding-left: 12px; }
+  /* No subdomínio o nome cresce com o texto, para o ".velacademy.com.br" ficar
+     colado nele e o endereço ler-se inteiro. */
+  .endereco.sub input { field-sizing: content; flex: 0 1 auto; width: auto; min-width: 8ch; }
+  select { font: inherit; color: inherit; padding: 10px 12px; border: 1px solid var(--linha); border-radius: 8px; background: var(--codigo); }
+  .estado { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .aviso { font-size: 13px; color: var(--suave); }
+  .aviso a { color: var(--marca); }
+  .editor { flex: 1; display: grid; grid-template-columns: 1fr; gap: 12px; min-height: 0; }
+  .editor.com-previa { grid-template-columns: 1fr 1fr; }
+  textarea { width: 100%; height: 100%; min-height: 320px; resize: none; padding: 12px; border: 1px solid var(--linha); border-radius: 10px; background: var(--codigo); font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 2; }
+  iframe { width: 100%; height: 100%; min-height: 320px; border: 1px solid var(--linha); border-radius: 10px; background: #fff; }
+  #solto { position: fixed; inset: 0; background: color-mix(in srgb, var(--marca) 20%, transparent); border: 3px dashed var(--marca); display: grid; place-items: center; font-size: 20px; pointer-events: none; }
+  #toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--texto); color: var(--fundo); padding: 10px 16px; border-radius: 10px; font-size: 14px; max-width: calc(100% - 32px); }
+
+  @media (max-width: 760px) {
+    .corpo { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    aside { border-right: 0; border-bottom: 1px solid var(--linha); max-height: 34vh; }
+    .editor.com-previa { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    header h1 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<section id="entrar" hidden>
+  <form id="form-entrar">
+    <h1>Páginas Lumivie</h1>
+    <p>Suba um HTML e ele fica no ar no endereço que escolher.</p>
+    <label class="campo" for="usuario">Usuário</label>
+    <input type="text" id="usuario" autocomplete="username" autocapitalize="off" required>
+    <label class="campo" for="senha">Senha</label>
+    <input type="password" id="senha" autocomplete="current-password" required>
+    <button class="primario" type="submit">Entrar</button>
+    <div class="erro" id="erro-entrar" role="alert"></div>
+  </form>
+</section>
+
+<section id="app" hidden>
+  <header>
+    <h1>Páginas Lumivie</h1>
+    <button class="primario" id="nova">Nova página</button>
+    <button id="sair">Sair</button>
+  </header>
+  <div class="corpo">
+    <aside id="lista" aria-label="Páginas"></aside>
+    <main>
+      <div id="sem-pagina" class="vazio">Escolha uma página na lista, clique em <b>Nova página</b> ou arraste um ficheiro .html para esta janela.</div>
+      <form id="form-pagina" hidden style="display:contents">
+        <div class="barra">
+          <select id="dominio" aria-label="Onde publicar"></select>
+          <label class="endereco" title="Endereço da página">
+            <span id="antes"></span>
+            <input type="text" id="slug" placeholder="nome-da-pagina" autocapitalize="off" spellcheck="false" required>
+            <span id="depois"></span>
+          </label>
+          <div class="estado">
+            <label class="chave"><input type="checkbox" id="ativa"><span></span></label>
+            <label for="ativa" id="rotulo-ativa">Desligada</label>
+          </div>
+        </div>
+        <div class="barra">
+          <button type="button" id="enviar">Enviar ficheiro .html</button>
+          <input type="file" id="ficheiro" accept=".html,.htm,text/html" hidden>
+          <button type="button" id="previa">Pré-visualizar</button>
+          <span style="flex:1"></span>
+          <button type="button" class="perigo" id="apagar">Apagar</button>
+          <button type="submit" class="primario" id="salvar">Salvar</button>
+        </div>
+        <div class="aviso" id="aviso"></div>
+        <div class="editor" id="editor">
+          <textarea id="html" spellcheck="false" placeholder="Cole aqui o HTML da página"></textarea>
+          <iframe id="quadro" title="Pré-visualização" hidden
+                  sandbox="allow-scripts allow-forms allow-popups"></iframe>
+        </div>
+      </form>
+    </main>
+  </div>
+</section>
+
+<div id="solto" hidden>Solte o ficheiro .html</div>
+<div id="toast" role="status" hidden></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let paginas = [];
+let dominios = [];
+let atual = null;       // id ("domínio/slug") da página aberta; null = página nova
+let sujo = false;
+
+async function api(caminho, opcoes = {}) {
+  const r = await fetch("api/" + caminho, {
+    ...opcoes,
+    headers: { "Content-Type": "application/json", "X-Painel": "1" },
+    credentials: "same-origin",
+  });
+  const dados = await r.json().catch(() => ({}));
+  if (r.status === 401 && caminho !== "entrar") { mostrarEntrar(); throw new Error(dados.erro); }
+  if (!r.ok) throw new Error(dados.erro || "Erro " + r.status);
+  return dados;
+}
+
+let tempoToast;
+function toast(texto) {
+  $("toast").textContent = texto;
+  $("toast").hidden = false;
+  clearTimeout(tempoToast);
+  tempoToast = setTimeout(() => ($("toast").hidden = true), 3200);
+}
+
+function mostrarEntrar() {
+  $("app").hidden = true;
+  $("entrar").hidden = false;
+  $("usuario").focus();
+}
+
+$("form-entrar").onsubmit = async (e) => {
+  e.preventDefault();
+  $("erro-entrar").textContent = "";
+  try {
+    await api("entrar", { method: "POST", body: JSON.stringify({ usuario: $("usuario").value, senha: $("senha").value }) });
+    $("senha").value = "";
+    abrirPainel();
+  } catch (err) {
+    $("erro-entrar").textContent = err.message;
+  }
+};
+
+$("sair").onclick = async () => {
+  if (!descartar()) return;
+  await api("sair", { method: "POST" }).catch(() => {});
+  sujo = false;
+  mostrarEntrar();
+};
+
+async function abrirPainel() {
+  await carregarLista();
+  $("entrar").hidden = true;
+  $("app").hidden = false;
+}
+
+const dataCurta = (iso) => new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+
+async function carregarLista() {
+  const r = await api("paginas");
+  paginas = r.paginas;
+  if (!dominios.length) {
+    dominios = r.dominios;
+    for (const d of dominios) {
+      const o = document.createElement("option");
+      o.value = d.dominio;
+      o.textContent = d.tipo === "sub" ? "Subdomínio ." + d.dominio : d.dominio + "/";
+      $("dominio").append(o);
+    }
+  }
+  const lista = $("lista");
+  lista.innerHTML = "";
+  if (!paginas.length) lista.innerHTML = '<div class="vazio">Nenhuma página ainda.</div>';
+  for (const p of paginas) {
+    const el = document.createElement("div");
+    el.className = "item" + (p.id === atual ? " atual" : "");
+    el.dataset.id = p.id;
+    el.innerHTML = `<div class="nome"><b></b><small></small></div>
+      <label class="chave" title="Ligar ou desligar"><input type="checkbox" aria-label="Página no ar"><span></span></label>`;
+    el.querySelector("b").textContent = p.endereco;
+    el.querySelector("small").textContent = (p.ativo ? "No ar" : "Desligada") + " · " + dataCurta(p.atualizado);
+    const chave = el.querySelector("input");
+    chave.checked = p.ativo;
+    chave.onclick = (e) => e.stopPropagation();
+    chave.onchange = () => alternar(p, chave.checked);
+    el.onclick = () => abrir(p.id);
+    lista.append(el);
+  }
+}
+
+async function alternar(p, ativo) {
+  try {
+    await api("paginas/" + encodeURIComponent(p.id), { method: "PATCH", body: JSON.stringify({ ativo }) });
+    toast(ativo ? `${p.endereco} está no ar` : `${p.endereco} foi desligada`);
+    if (p.id === atual) $("ativa").checked = ativo;
+  } catch (err) { toast(err.message); }
+  await carregarLista();
+  if (p.id === atual) rotuloAtiva();
+}
+
+function descartar() {
+  return !sujo || confirm("Há alterações não salvas. Descartar?");
+}
+
+function preencher(dominio, slug, ativo, html) {
+  $("sem-pagina").hidden = true;
+  $("form-pagina").hidden = false;
+  $("dominio").value = dominio;
+  moldura();
+  $("slug").value = slug;
+  $("ativa").checked = ativo;
+  $("html").value = html;
+  rotuloAtiva();
+  atualizarPrevia();
+  sujo = false;
+  for (const el of document.querySelectorAll(".item")) el.classList.toggle("atual", el.dataset.id === atual);
+}
+
+async function abrir(id) {
+  if (id === atual || !descartar()) return;
+  try {
+    const p = await api("paginas/" + encodeURIComponent(id));
+    atual = id;
+    preencher(p.dominio, p.slug, p.ativo, p.html);
+  } catch (err) { toast(err.message); }
+}
+
+function nova(slug = "", html = "") {
+  if (!descartar()) return;
+  atual = null;
+  preencher($("dominio").value || dominios[0].dominio, slug, true, html);
+  sujo = !!html;
+  (slug ? $("html") : $("slug")).focus();
+}
+$("nova").onclick = () => nova();
+
+// Página por caminho mostra "lumivie.com.br/" antes do nome; subdomínio mostra
+// ".velacademy.com.br" depois. A pessoa vê o endereço final enquanto escreve.
+function moldura() {
+  const d = dominios.find((x) => x.dominio === $("dominio").value) || dominios[0];
+  $("antes").textContent = d.tipo === "sub" ? "" : d.dominio + "/";
+  $("depois").textContent = d.tipo === "sub" ? "." + d.dominio : "";
+  $("antes").parentElement.classList.toggle("sub", d.tipo === "sub");
+}
+$("dominio").onchange = () => { moldura(); sujo = true; };
+
+function rotuloAtiva() {
+  $("rotulo-ativa").textContent = $("ativa").checked ? "No ar" : "Desligada";
+  const p = atual && paginas.find((x) => x.id === atual);
+  $("aviso").innerHTML = "";
+  if (p && p.ativo) {
+    const a = document.createElement("a");
+    a.href = "https://" + p.endereco;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = p.endereco;
+    $("aviso").append("No ar em ", a);
+  } else if (p) {
+    $("aviso").textContent = p.dominio === dominios[0].dominio
+      ? "Desligada: quem abrir o endereço vê o site da Lumivie."
+      : "Desligada: o endereço responde que a página não existe.";
+  } else {
+    $("aviso").textContent = "Página nova, ainda não salva.";
+  }
+}
+$("ativa").onchange = () => { sujo = true; rotuloAtiva(); };
+
+// O endereço aceita só o que o servidor aceita, então a pessoa vê o slug final
+// enquanto digita em vez de descobrir depois de salvar.
+const paraSlug = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+  .replace(/\.html?$/, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
+$("slug").oninput = () => {
+  const limpo = $("slug").value.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9-]+/g, "-");
+  if (limpo !== $("slug").value) $("slug").value = limpo;
+  sujo = true;
+};
+$("html").oninput = () => { sujo = true; agendarPrevia(); };
+
+let comPrevia = false;
+let tempoPrevia;
+function atualizarPrevia() { if (comPrevia) $("quadro").srcdoc = $("html").value; }
+function agendarPrevia() { clearTimeout(tempoPrevia); tempoPrevia = setTimeout(atualizarPrevia, 500); }
+$("previa").onclick = () => {
+  comPrevia = !comPrevia;
+  $("quadro").hidden = !comPrevia;
+  $("editor").classList.toggle("com-previa", comPrevia);
+  $("previa").textContent = comPrevia ? "Fechar pré-visualização" : "Pré-visualizar";
+  atualizarPrevia();
+};
+
+function lerFicheiro(f) {
+  if (!f) return;
+  if (!/\.html?$/i.test(f.name) && f.type !== "text/html") return toast("Envie um ficheiro .html");
+  const leitor = new FileReader();
+  leitor.onload = () => {
+    // Com uma página aberta, o ficheiro substitui o HTML dela. Sem nenhuma,
+    // vira página nova com o nome do ficheiro como endereço.
+    if ($("form-pagina").hidden) nova(paraSlug(f.name), leitor.result);
+    else {
+      $("html").value = leitor.result;
+      if (!atual && !$("slug").value) $("slug").value = paraSlug(f.name);
+      sujo = true;
+      atualizarPrevia();
+      toast("HTML carregado. Clique em Salvar para publicar.");
+    }
+  };
+  leitor.readAsText(f);
+}
+$("enviar").onclick = () => $("ficheiro").click();
+$("ficheiro").onchange = () => { lerFicheiro($("ficheiro").files[0]); $("ficheiro").value = ""; };
+
+let arrastos = 0;
+addEventListener("dragenter", (e) => { if ($("app").hidden) return; e.preventDefault(); arrastos++; $("solto").hidden = false; });
+addEventListener("dragleave", () => { if (--arrastos <= 0) { arrastos = 0; $("solto").hidden = true; } });
+addEventListener("dragover", (e) => e.preventDefault());
+addEventListener("drop", (e) => {
+  e.preventDefault();
+  arrastos = 0;
+  $("solto").hidden = true;
+  if (!$("app").hidden) lerFicheiro(e.dataTransfer.files[0]);
+});
+
+$("form-pagina").onsubmit = async (e) => {
+  e.preventDefault();
+  const slug = $("slug").value.replace(/^-+|-+$/g, "");
+  if (!slug) return toast("Preencha o endereço da página.");
+  $("salvar").disabled = true;
+  try {
+    const dominio = $("dominio").value;
+    const corpo = { html: $("html").value, ativo: $("ativa").checked, dominio, slug };
+    const alvo = atual || dominio + "/" + slug;
+    if (!atual) corpo.criar = true;
+    if (dominio !== dominios[0].dominio) toast("Conferindo se o subdomínio está livre...");
+    const p = await api("paginas/" + encodeURIComponent(alvo), { method: "PUT", body: JSON.stringify(corpo) });
+    atual = p.id;
+    sujo = false;
+    await carregarLista();
+    $("slug").value = p.slug;
+    rotuloAtiva();
+    toast(p.ativo ? `Salvo. No ar em ${p.endereco}` : "Salvo. A página está desligada.");
+  } catch (err) {
+    toast(err.message);
+  } finally {
+    $("salvar").disabled = false;
+  }
+};
+
+$("apagar").onclick = async () => {
+  if (!atual) { sujo = false; $("form-pagina").hidden = true; $("sem-pagina").hidden = false; return; }
+  const pg = paginas.find((x) => x.id === atual);
+  if (!confirm(`Apagar ${pg.endereco}? Não dá para desfazer.`)) return;
+  try {
+    await api("paginas/" + encodeURIComponent(atual), { method: "DELETE" });
+    toast(`${pg.endereco} foi apagada`);
+    atual = null;
+    sujo = false;
+    $("form-pagina").hidden = true;
+    $("sem-pagina").hidden = false;
+    await carregarLista();
+  } catch (err) { toast(err.message); }
+};
+
+addEventListener("beforeunload", (e) => { if (sujo) e.preventDefault(); });
+
+abrirPainel().catch(mostrarEntrar);
+</script>
+</body>
+</html>
