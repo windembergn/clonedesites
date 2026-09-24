@@ -968,7 +968,7 @@
 }
 @media (min-width: 880px) {
   .depoimentos-grade {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 /* Os retratos dos vídeos vêm numa fila própria, acima das frases. A altura é

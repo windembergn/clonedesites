@@ -198,13 +198,13 @@ export const GALERIA_CLINICA = [
    para juntar. */
 /* Os nomes vêm do título de cada vídeo no canal do Dr. Christian
    ("Depoimento_Alessandra"). O primeiro está publicado como
-   "Depoimento_Moçambique", sem nome da paciente, então o cartão diz só de onde
-   ela vem: melhor isso do que um nome inventado. */
+   "Depoimento_Moçambique" e ela não diz o nome no vídeo, então o cartão diz só
+   de onde ela vem: melhor isso do que um nome inventado. */
 export const VIDEOS_DEPOIMENTO = [
   {
     foto: "depoimento-mocambique",
     id: "JwDyXeGkYm8",
-    nome: "Moçambique",
+    nome: "Paciente de Moçambique",
     alt: "Paciente moçambicana do Dr. Christian no seu depoimento em vídeo",
   },
   {
@@ -221,7 +221,16 @@ export const VIDEOS_DEPOIMENTO = [
   },
 ];
 
+/* O primeiro são as palavras da paciente de Moçambique no vídeo, só com os
+   cortes de fala. Ela não diz qual foi a cirurgia, daí a linha de baixo não
+   nomear procedimento. */
 export const DEPOIMENTOS = [
+  {
+    texto:
+      "Depois do meu último parto, eu já não era eu. Olhava pro espelho e não me reconhecia. Depois da cirurgia, me sinto outra pessoa. O que eu gostei do Dr. Christian é que ele não me pôs diferente, deixou-me 100% natural.",
+    nome: "Paciente de Moçambique",
+    proc: "Depoimento em vídeo",
+  },
   {
     texto:
       "Desde a primeira videochamada senti-me acolhida. A consultora explicou tudo com clareza e orientou-me em cada etapa. Hoje olho ao espelho e reconheço-me.",
