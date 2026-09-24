@@ -592,28 +592,34 @@
 /* No telemóvel a fixação some: vira uma tira que se arrasta com o dedo, que é
    o gesto que a pessoa já espera ali. */
 @media (max-width: 899px) {
+  /* O fundo da seção sai da dica, e não do palco, para a dica colar na tira. */
   .galeria-palco {
     height: auto;
-    padding-block: var(--secao);
+    padding-top: var(--secao);
+    padding-bottom: 0;
     display: block;
     overflow: visible;
   }
   .galeria-trilho {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    padding-bottom: 1.2rem;
+    padding-bottom: 0.4rem;
     transform: none !important;
   }
+  /* A foto ocupa quase a largura toda e ganha altura em retrato: numa tela em
+     pé a paisagem 4:3 ficava pequena e sobrava fundo preto. */
   .galeria-item {
-    width: 74vw;
+    width: 86vw;
     scroll-snap-align: center;
   }
   /* Aqui quem manda é a largura da peça. Deixar a altura no comando fazia a
      moldura sair 698 px de largura dentro de um item de 304 e cavalgar a foto
      seguinte. */
-  .galeria-item .quadro {
+  .galeria-item .quadro,
+  .galeria-item.alto .quadro {
     height: auto;
     width: 100%;
+    aspect-ratio: 4 / 5;
   }
   /* O cartão de texto fica mais estreito que a tela de propósito: assim entra
      um pedaço da primeira foto e fica claro que a tira anda para o lado. */
@@ -652,6 +658,9 @@
 @media (max-width: 899px) {
   .galeria-dica {
     display: flex;
+    margin-top: 0.2rem;
+    padding-bottom: var(--secao);
+    opacity: 0.75;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -959,7 +968,7 @@
 }
 @media (min-width: 880px) {
   .depoimentos-grade {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 /* Os retratos dos vídeos vêm numa fila própria, acima das frases. A altura é
@@ -1354,6 +1363,34 @@
 .roleta-saida svg {
   width: 1.2rem;
   height: 1.2rem;
+}
+/* O botão pula: parado, ninguém percebia que era por ali que se saía da roda. */
+.roleta-saida {
+  animation: pula 1.6s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(242, 238, 230, 0.35);
+}
+@keyframes pula {
+  0%, 40%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 0 rgba(242, 238, 230, 0.35);
+  }
+  20% {
+    transform: translateY(-9px);
+  }
+  30% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-4px);
+  }
+  60% {
+    box-shadow: 0 0 0 12px rgba(242, 238, 230, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .roleta-saida {
+    animation: none;
+  }
 }
 @media (min-width: 1024px) {
   .roleta-saida {

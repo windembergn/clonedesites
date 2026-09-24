@@ -29,7 +29,7 @@ export const NAV = [
   { href: "#video", texto: "Vídeo" },
   { href: "#medico", texto: "O médico" },
   { href: "#hospital", texto: "Hospital" },
-  { href: "#jornada", texto: "Dream Day" },
+  { href: "#jornada", texto: "Lumivie Day" },
   { href: "#procedimentos", texto: "Procedimentos" },
   { href: "#duvidas", texto: "Dúvidas" },
 ];
@@ -46,7 +46,7 @@ export const FAIXA_PROVA = [
 export const NUMEROS = [
   { valor: 4000, prefixo: "+", rotulo: "cirurgias realizadas" },
   { valor: 10, prefixo: "+", rotulo: "anos de experiência" },
-  { valor: 2, sufixo: " h", rotulo: "de consulta no Dream Day" },
+  { valor: 2, sufixo: " h", rotulo: "de consulta no Lumivie Day" },
   { valor: 24, sufixo: " h", rotulo: "de recuperação no protocolo R24R" },
 ];
 
@@ -132,11 +132,11 @@ export const JORNADA = [
     n: "01",
     titulo: "O primeiro contacto",
     texto:
-      "Você fala com a consultora pelo WhatsApp e conta o que procura. Ela explica como funciona o atendimento internacional e agenda o Dream Day.",
+      "Você fala com a consultora pelo WhatsApp e conta o que procura. Ela explica como funciona o atendimento internacional e agenda o Lumivie Day.",
   },
   {
     n: "02",
-    titulo: "Dream Day, a consulta com o Dr. Christian",
+    titulo: "Lumivie Day, a consulta com o Dr. Christian",
     texto:
       "Uma videochamada de hora e meia a duas horas, directamente com ele. Tempo para ouvir os seus objectivos, avaliar a sua anatomia e construir o planeamento cirúrgico.",
   },
@@ -196,25 +196,26 @@ export const GALERIA_CLINICA = [
    separados de propósito: pôr o nome de uma paciente debaixo do rosto de outra
    seria inventar. Assim que houver o vídeo (ou o nome de quem fala nele), dá
    para juntar. */
-/* Os nomes vêm do título de cada vídeo no YouTube ("Depoimento Alessandra",
-   "Depoimento Glaucia"). O do meio está publicado como "30 de outubro de 2025",
-   sem nome, então fica sem: melhor um cartão sem nome do que um nome trocado. */
+/* Os nomes vêm do título de cada vídeo no canal do Dr. Christian
+   ("Depoimento_Alessandra"). O primeiro está publicado como
+   "Depoimento_Moçambique", sem nome da paciente, então o cartão diz só de onde
+   ela vem: melhor isso do que um nome inventado. */
 export const VIDEOS_DEPOIMENTO = [
   {
+    foto: "depoimento-mocambique",
+    id: "JwDyXeGkYm8",
+    nome: "Moçambique",
+    alt: "Paciente moçambicana do Dr. Christian no seu depoimento em vídeo",
+  },
+  {
     foto: "depoimento-1",
-    id: "ZIPJ4ri-JQU",
+    id: "dh2l6l53GLE",
     nome: "Alessandra",
     alt: "Alessandra, paciente do Dr. Christian, no seu depoimento em vídeo",
   },
   {
-    foto: "depoimento-2",
-    id: "xxydFfbiVHA",
-    nome: "",
-    alt: "Paciente do Dr. Christian no seu depoimento em vídeo",
-  },
-  {
     foto: "depoimento-3",
-    id: "olc_U5iBrRE",
+    id: "lI1h9zL3WDA",
     nome: "Glaucia",
     alt: "Glaucia, paciente do Dr. Christian, no seu depoimento em vídeo",
   },
@@ -229,12 +230,6 @@ export const DEPOIMENTOS = [
   },
   {
     texto:
-      "Tive medo no início, mas a equipa esteve presente o tempo todo. A recuperação foi mais tranquila do que eu imaginava e o resultado superou as minhas expectativas.",
-    nome: "Alice Neves",
-    proc: "Lipoaspiração",
-  },
-  {
-    texto:
       "Realizei um sonho que parecia impossível. O pagamento facilitado e o acompanhamento próximo fizeram toda a diferença. Valeu cada segundo.",
     nome: "Rafaela Becker",
     proc: "Aumento de Mama",
@@ -243,7 +238,7 @@ export const DEPOIMENTOS = [
 
 export const DUVIDAS = [
   {
-    p: "O que é o Dream Day?",
+    p: "O que é o Lumivie Day?",
     r: "É o dia da sua primeira consulta com o Dr. Christian, uma videochamada de hora e meia a duas horas dedicada ao seu caso. Ele ouve os seus objectivos, avalia a sua anatomia e cria um plano de tratamento individualizado, do pré ao pós-operatório.",
   },
   {
@@ -252,7 +247,7 @@ export const DUVIDAS = [
   },
   {
     p: "Quanto tempo tenho de ficar em São Paulo?",
-    r: "Depende do procedimento e da sua recuperação, e fica definido no Dream Day, antes de marcar viagem. A alta para voar é uma decisão médica, avaliada caso a caso.",
+    r: "Depende do procedimento e da sua recuperação, e fica definido no Lumivie Day, antes de marcar viagem. A alta para voar é uma decisão médica, avaliada caso a caso.",
   },
   {
     p: "Posso vir acompanhada?",
@@ -264,7 +259,7 @@ export const DUVIDAS = [
   },
   {
     p: "Como funciona o pagamento vindo do estrangeiro?",
-    r: "A consultora apresenta as formas de pagamento disponíveis para pacientes internacionais e o que fica incluído: honorários, hospital, materiais e retornos. O Dream Day é agendado antes de qualquer compromisso financeiro com a cirurgia.",
+    r: "A consultora apresenta as formas de pagamento disponíveis para pacientes internacionais e o que fica incluído: honorários, hospital, materiais e retornos. O Lumivie Day é agendado antes de qualquer compromisso financeiro com a cirurgia.",
   },
   {
     p: "Qual é o valor da cirurgia?",

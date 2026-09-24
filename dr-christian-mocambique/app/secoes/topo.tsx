@@ -67,7 +67,7 @@ export function Navbar() {
         ))}
       </nav>
       <a className="btn" href="#contacto">
-        Agendar Dream Day
+        Agendar Lumivie Day
       </a>
     </header>
   );
@@ -165,7 +165,7 @@ export function Hero() {
         <div className="hero-acoes" data-hero-sobe>
           <a className="btn btn-claro" href="#contacto">
             <span className="brilho" aria-hidden />
-            Agendar o meu Dream Day
+            Agendar o meu Lumivie Day
           </a>
           <a className="btn" href="#video">
             Ver o vídeo

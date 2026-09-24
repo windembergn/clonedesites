@@ -243,7 +243,7 @@ export function Roleta() {
 
 /** Fachada de vídeo: até ao clique só existe o cartaz, e nenhum byte sai para o
  *  YouTube. O iframe (e todo o rasto que ele traz) só entra quando alguém pede
- *  para ver. São os mesmos três vídeos publicados no site brasileiro. */
+ *  para ver. Os vídeos vêm do canal do Dr. Christian. */
 function VideoDepoimento({
   v,
 }: {
@@ -468,7 +468,7 @@ function Formulario() {
       </div>
       <button className="btn btn-claro" type="submit" disabled={enviando}>
         <span className="brilho" aria-hidden />
-        {enviando ? "A abrir o WhatsApp…" : "Agendar o meu Dream Day"}
+        {enviando ? "A abrir o WhatsApp…" : "Agendar o meu Lumivie Day"}
       </button>
       <p className="aviso">
         Ao enviar, a conversa abre no WhatsApp com a consultora do Dr. Christian
@@ -486,13 +486,13 @@ export function Cta() {
     <section className="cta petroleo" ref={scope} id="contacto">
       <div className="faixa cta-grade">
         <div>
-          <Olho>Dream Day</Olho>
+          <Olho>Lumivie Day</Olho>
           <h2 className="d2" data-split style={{ margin: "1.4rem 0 1.3rem" }}>
             O lugar certo para você{" "}
             <span className="italico">se reconhecer no espelho</span>
           </h2>
           <p className="lead medida" data-reveal="0.12">
-            Agende o seu Dream Day com o Dr. Christian Ferreira. Uma avaliação
+            Agende o seu Lumivie Day com o Dr. Christian Ferreira. Uma avaliação
             individual, um planeamento feito para o seu corpo e acompanhamento
             que segue até a recuperação completa.
           </p>
@@ -620,7 +620,7 @@ export function Barra() {
   return (
     <div className="barra" ref={ref}>
       <a className="btn btn-claro" href="#contacto">
-        Agendar Dream Day
+        Agendar Lumivie Day
       </a>
       <a
         className="btn"

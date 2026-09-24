@@ -284,7 +284,7 @@ export function Moema() {
   );
 }
 
-/* --- jornada (Dream Day) -------------------------------------------------- */
+/* --- jornada (Lumivie Day) -------------------------------------------------- */
 
 /** A rota Maputo → São Paulo desenha-se conforme a lista avança. É o único
  *  desenho animado da página, e existe porque a jornada é exactamente o que
@@ -347,7 +347,7 @@ export function Jornada() {
           Do primeiro contacto <span className="italico">ao regresso a casa</span>
         </h2>
         <p className="lead medida" data-reveal="0.12">
-          Tudo começa no Dream Day, a sua primeira consulta com o Dr. Christian.
+          Tudo começa no Lumivie Day, a sua primeira consulta com o Dr. Christian.
           Uma videochamada de hora e meia a duas horas dedicada ao seu caso,
           para ouvir os seus objectivos, avaliar a sua anatomia e construir o
           planeamento cirúrgico.
