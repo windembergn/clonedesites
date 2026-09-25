@@ -1,11 +1,13 @@
 /**
  * Painel de hospedagem de sites estáticos da Lumivie. Cada site é uma pasta
  * com os arquivos que a pessoa enviar (HTML, CSS, JS, imagens, subpastas) e
- * fica no ar num de dois tipos de endereço:
+ * fica no ar num de três tipos de endereço:
  *
  *   caminho      <domínio>/<slug>     (lumivie.com.br, ou a raiz de um domínio
  *                                      ativado cuja raiz estava livre)
  *   subdomínio   <slug>.<domínio>     (qualquer domínio ativado)
+ *   raiz         <domínio>            (a página principal de um domínio com a
+ *                                      raiz ativada; um site por domínio)
  *
  * Existe para que quem faz os sites não precise de SSH nem de mexer no nginx
  * ou no DNS: entra com usuário e senha, envia os arquivos e liga ou desliga.
@@ -78,6 +80,10 @@ const RESERVADOS_SUB = new Set([
   "www", "mail", "webmail", "smtp", "imap", "pop", "ftp", "cpanel", "whm", "webdisk",
   "cpcalendars", "cpcontacts", "ns1", "ns2", "autodiscover", "autoconfig", "api", "app", "admin",
 ]);
+
+// Nome do link da página principal dentro da pasta do domínio. O "_" não
+// passa no SLUG, então nenhum site por caminho consegue ocupar esse nome.
+const PRINCIPAL_LINK = "_principal";
 
 const SLUG = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 const NOME_USUARIO = /^[a-z0-9][a-z0-9._-]{1,31}$/;
@@ -190,13 +196,15 @@ const dominioAtivo = (d) => dominios.find((x) => x.dominio === d);
 function modoPermitido(modo, dominio) {
   if (modo === "caminho") return dominio === PRINCIPAL || !!dominioAtivo(dominio)?.raiz;
   if (modo === "sub") return !!dominioAtivo(dominio);
+  // lumivie.com.br nunca: a raiz dele é o site da Lumivie.
+  if (modo === "raiz") return !!dominioAtivo(dominio)?.raiz;
   return false;
 }
 const opcoesEndereco = () => [
   { modo: "caminho", dominio: PRINCIPAL },
   ...dominios.flatMap((d) => [
     { modo: "sub", dominio: d.dominio },
-    ...(d.raiz ? [{ modo: "caminho", dominio: d.dominio }] : []),
+    ...(d.raiz ? [{ modo: "raiz", dominio: d.dominio }, { modo: "caminho", dominio: d.dominio }] : []),
   ]),
 ];
 
@@ -218,9 +226,14 @@ async function dns(metodo, rota, corpo) {
 let sites = lerJson(SITES, {});
 const salvarSites = () => escreverAtomico(SITES, JSON.stringify(sites, null, 2));
 
-const endereco = (s) => (s.modo === "sub" ? `${s.slug}.${s.dominio}` : `${s.dominio}/${s.slug}`);
+const endereco = (s) => (s.modo === "sub" ? `${s.slug}.${s.dominio}` : s.modo === "raiz" ? s.dominio : `${s.dominio}/${s.slug}`);
 const pastaSite = (id) => path.join(ARQUIVOS, id);
-const linkDe = (s) => (s.modo === "sub" ? path.join(PUBLICADO, `${s.slug}.${s.dominio}`) : path.join(PUBLICADO, s.dominio, s.slug));
+// A página principal mora ao lado dos links por slug, na mesma pasta do
+// domínio: o nginx procura primeiro um slug e, se não houver, cai nela. Assim
+// ligar a principal não tira do ar os sites em dominio/slug.
+const linkDe = (s) =>
+  s.modo === "sub" ? path.join(PUBLICADO, `${s.slug}.${s.dominio}`)
+    : path.join(PUBLICADO, s.dominio, s.modo === "raiz" ? PRINCIPAL_LINK : s.slug);
 
 // O link é relativo para valer igual aqui dentro e no nginx: nos dois, as
 // pastas PUBLICADO e ARQUIVOS são irmãs.
@@ -293,6 +306,12 @@ async function respondeAqui(host) {
 }
 
 async function motivoEnderecoInvalido({ modo, dominio, slug }, idAtual) {
+  if (modo === "raiz") {
+    if (!modoPermitido(modo, dominio)) return `A raiz de ${dominio} não está ativada. Um administrador ativa em Domínios.`;
+    const ocupado = Object.entries(sites).find(([id, s]) => id !== idAtual && s.modo === "raiz" && s.dominio === dominio);
+    if (ocupado) return `${dominio} já tem página principal. Mude o endereço dela antes.`;
+    return null;
+  }
   if (!SLUG.test(slug)) return "Use só letras minúsculas, números e hífen (ex.: promo-setembro).";
   if (!modoPermitido(modo, dominio)) return "Esse tipo de endereço não está ativo para esse domínio.";
   const ocupado = Object.entries(sites).find(([id, s]) => id !== idAtual && s.modo === modo && s.dominio === dominio && s.slug === slug);
@@ -662,7 +681,7 @@ async function tratar(req, res) {
     }
     if (req.method === "POST") {
       const corpo = await lerJsonCorpo(req);
-      const novo = { modo: String(corpo.modo), dominio: String(corpo.dominio), slug: String(corpo.slug || "") };
+      const novo = { modo: String(corpo.modo), dominio: String(corpo.dominio), slug: corpo.modo === "raiz" ? "" : String(corpo.slug || "") };
       const motivo = await motivoEnderecoInvalido(novo);
       if (motivo) return responder(res, 400, { erro: motivo });
       const id = crypto.randomBytes(4).toString("hex");
@@ -696,6 +715,7 @@ async function tratar(req, res) {
         dominio: corpo.dominio !== undefined ? String(corpo.dominio) : site.dominio,
         slug: corpo.slug !== undefined ? String(corpo.slug) : site.slug,
       };
+      if (novo.modo === "raiz") novo.slug = "";
       const mudouEndereco = novo.modo !== site.modo || novo.dominio !== site.dominio || novo.slug !== site.slug;
       if (mudouEndereco) {
         const motivo = await motivoEnderecoInvalido(novo, id);
@@ -981,7 +1001,8 @@ async function tratar(req, res) {
         .filter((z) => z.nome !== PRINCIPAL)
         .map((z) => {
           const d = dominioAtivo(z.nome);
-          return { ...z, sub: !!d, raiz: !!d?.raiz };
+          const principal = Object.values(sites).find((s) => s.modo === "raiz" && s.dominio === z.nome);
+          return { ...z, sub: !!d, raiz: !!d?.raiz, principal: principal ? { ativo: !!principal.ativo } : null };
         });
       return responder(res, 200, { zonas: lista });
     }

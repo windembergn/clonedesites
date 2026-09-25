@@ -92,6 +92,7 @@
   .endereco span:first-of-type:empty + input { padding-left: 12px; }
   /* No subdomínio o nome cresce com o texto, para o ".dominio" ficar colado
      nele e o endereço ler-se inteiro. */
+  .endereco.raiz span:first-of-type { padding: 10px 12px; }
   .endereco.sub input { field-sizing: content; flex: 0 1 auto; width: auto; min-width: 8ch; }
   .estado { display: flex; align-items: center; gap: 8px; font-size: 14px; }
   .aviso { font-size: 13px; color: var(--suave); }
@@ -308,7 +309,7 @@
   <!-- Domínios -->
   <div class="tela tela-larga" id="tela-dominios" hidden>
     <h2>Domínios</h2>
-    <p class="aviso" style="margin:0 0 14px">Os domínios da conta Cloudflare da Lumivie. <b>Ativar subdomínios</b> deixa criar sites em nome.dominio.com.br, sem mexer nos subdomínios que já existem. <b>Ativar domínio/slug</b> deixa criar sites em dominio.com.br/nome e só aparece quando o domínio não tem site próprio.</p>
+    <p class="aviso" style="margin:0 0 14px">Os domínios da conta Cloudflare da Lumivie. <b>Ativar subdomínios</b> deixa criar sites em nome.dominio.com.br, sem mexer nos subdomínios que já existem. <b>Ativar raiz</b> deixa pôr um site como página principal em dominio.com.br e outros em dominio.com.br/nome. Só aparece quando o DNS da raiz não aponta para nenhum servidor.</p>
     <div class="tabela" id="lista-dominios"></div>
   </div>
 </section>
@@ -526,20 +527,24 @@ function montarOpcoes(sel) {
   for (const e of enderecos) {
     const o = document.createElement("option");
     o.value = valorEndereco(e);
-    o.textContent = e.modo === "sub" ? "Subdomínio ." + e.dominio : e.dominio + "/";
+    o.textContent = e.modo === "sub" ? "Subdomínio ." + e.dominio : e.modo === "raiz" ? e.dominio + " (página principal)" : e.dominio + "/";
     sel.append(o);
   }
   if (antes && enderecos.some((e) => valorEndereco(e) === antes)) sel.value = antes;
 }
 // Caminho mostra "dominio/" antes do nome; subdomínio mostra ".dominio"
-// depois. A pessoa vê o endereço final enquanto escreve.
+// depois; a página principal é só o domínio, sem nome para escrever. A
+// pessoa vê o endereço final enquanto escreve.
 function moldura(sel, rotulo) {
   const [modo, dominio] = sel.value.split(/:(.*)/);
-  const [antes, , depois] = rotulo.children;
-  antes.textContent = modo === "sub" ? "" : dominio + "/";
+  const [antes, campo, depois] = rotulo.children;
+  antes.textContent = modo === "sub" ? "" : modo === "raiz" ? dominio : dominio + "/";
   depois.textContent = modo === "sub" ? "." + dominio : "";
+  campo.hidden = modo === "raiz";
   rotulo.classList.toggle("sub", modo === "sub");
+  rotulo.classList.toggle("raiz", modo === "raiz");
 }
+const ehRaiz = (sel) => sel.value.startsWith("raiz:");
 const limparSlug = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9-]+/g, "-");
 for (const id of ["slug", "novo-slug"]) {
   $(id).addEventListener("input", () => {
@@ -637,14 +642,14 @@ function mostrarCabecalho(s) {
 function marcarEndereco() {
   const s = sites.find((x) => x.id === atual);
   if (!s) return;
-  const mudou = $("onde").value !== s.modo + ":" + s.dominio || $("slug").value !== s.slug;
+  const mudou = $("onde").value !== s.modo + ":" + s.dominio || (!ehRaiz($("onde")) && $("slug").value !== s.slug);
   $("salvar-endereco").hidden = !mudou;
 }
 $("onde").onchange = () => { moldura($("onde"), $("endereco")); marcarEndereco(); };
 $("salvar-endereco").onclick = async () => {
   const [modo, dominio] = $("onde").value.split(/:(.*)/);
   const slug = $("slug").value.replace(/^-+|-+$/g, "");
-  if (!slug) return toast("Preencha o endereço.");
+  if (!slug && modo !== "raiz") return toast("Preencha o endereço.");
   if (modo === "sub") toast("Conferindo se o subdomínio está livre...");
   try {
     const s = await api("sites/" + atual, { method: "PATCH", body: JSON.stringify({ modo, dominio, slug }) });
@@ -690,16 +695,19 @@ $("novo-site").onclick = () => {
   $("sem-site").hidden = true;
   $("form-novo").hidden = false;
   $("novo-slug").value = "";
-  moldura($("novo-onde"), $("novo-endereco"));
+  $("novo-onde").onchange();
   $("novo-slug").focus();
 };
-$("novo-onde").onchange = () => moldura($("novo-onde"), $("novo-endereco"));
+$("novo-onde").onchange = () => {
+  moldura($("novo-onde"), $("novo-endereco"));
+  $("novo-slug").required = !ehRaiz($("novo-onde"));
+};
 $("novo-cancelar").onclick = fecharSite;
 $("form-novo").onsubmit = async (e) => {
   e.preventDefault();
   const [modo, dominio] = $("novo-onde").value.split(/:(.*)/);
   const slug = $("novo-slug").value.replace(/^-+|-+$/g, "");
-  if (!slug) return toast("Preencha o endereço.");
+  if (!slug && modo !== "raiz") return toast("Preencha o endereço.");
   $("novo-criar").disabled = true;
   if (modo === "sub") toast("Conferindo se o subdomínio está livre...");
   try {
@@ -1366,7 +1374,8 @@ async function carregarDominios() {
       el.append(e);
     };
     if (z.sub) etiqueta("Subdomínios ativos", "ok");
-    if (z.raiz) etiqueta("domínio/slug ativo", "ok");
+    if (z.raiz) etiqueta("Raiz ativa", "ok");
+    if (z.raiz) etiqueta(!z.principal ? "sem página principal" : z.principal.ativo ? "página principal no ar" : "página principal desligada", z.principal?.ativo ? "ok" : "");
     if (z.problema && !z.sub) etiqueta(z.problema, "aviso");
     const botao = (texto, raiz, explicacao) => {
       const b = document.createElement("button");
@@ -1388,12 +1397,12 @@ async function carregarDominios() {
       botao("Ativar subdomínios", false, `Cria no Cloudflare o registro *.${z.nome} apontando para o servidor dos sites, e o certificado. Os subdomínios que já existem continuam iguais.`);
     }
     if (z.sub && !z.raiz && z.raizLivre) {
-      botao("Ativar domínio/slug", true, `Faz ${z.nome} apontar para o servidor dos sites, para criar sites em ${z.nome}/nome. Só é possível porque ${z.nome} não tem site próprio hoje.`);
+      botao("Ativar raiz", true, `Faz ${z.nome} apontar para o servidor dos sites. Depois dá para escolher um site como página principal de ${z.nome} e criar outros em ${z.nome}/nome. Só é possível porque o DNS da raiz de ${z.nome} está vazio hoje.`);
     }
     if (z.sub && !z.raiz && !z.raizLivre) {
       const p = document.createElement("span");
       p.className = "pequeno suave";
-      p.textContent = `${z.nome} já tem site próprio: use subdomínio.`;
+      p.textContent = `A raiz de ${z.nome} já aponta para outro servidor: só subdomínio.`;
       el.append(p);
     }
     box.append(el);
